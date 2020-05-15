@@ -45,7 +45,21 @@ router.get("/usuario/add", (req, res) => {
     res.render("admin/addusuario")
 })
 router.post("/usuario/novo", (req, res) => {
-    
+    var a = "insert into usuario(nome,numero,dt)values('"
+    var b = req.body.nome;
+    var c = "','"
+    var d = req.body.slug;
+    var e = "',CURRENT_TIMESTAMP)"
+
+    var sql = a + b + c + d + e;
+    //res.send(sql); 
+    //var values = [[req.body.nome, req.body.slug]]
+    //var sql="insert into usuario(nome,numero,dt)values("+req.body.nome+","+req.body.slug+",CURRENT_TIMESTAMP)";
+    //var values = [[req.body.nome, req.body.slug]]
+    usudb.connection.query(sql, function (err, result) {
+        if (err) res.send("Erro na Criação do Usuário");
+        res.send("Usuario Criado");
+    })
 })
 
 module.exports = router
