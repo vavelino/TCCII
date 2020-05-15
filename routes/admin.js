@@ -6,13 +6,6 @@ const usudb = require("../models/Usuaridb")
 
 
 
-router.get('/oi', (req, res) => {
-    res.send("OI E AE?")
-})
-router.get('/boot', (req, res) => {
-    res.render("admin/outro")
-})
-
 router.get('/cad', function (req, res) {
     res.render('formulario')
 })
@@ -39,27 +32,50 @@ router.get('/deletar/:id', function (req, res) {
 })
 
 router.get("/usuario", (req, res) => {
-    res.render("admin/usuario")
+    usudb.connection.query("select * from usuario", function (err, posts, field) {
+        if (err) throw err;
+        res.render('admin/usuario', { posts: posts })
+    })    
 })
 router.get("/usuario/add", (req, res) => {
     res.render("admin/addusuario")
 })
 router.post("/usuario/novo", (req, res) => {
-    var a = "insert into usuario(nome,numero,dt)values('"
-    var b = req.body.nome;
-    var c = "','"
-    var d = req.body.slug;
-    var e = "',CURRENT_TIMESTAMP)"
+    // (!req.body.nome) -> se não for enviado o nome
+    var erros = []
+    if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
+        erros.push({ text: "Nome inválido" })// Coloca um novo dado no array
+    }
+    if (!req.body.slug || typeof req.body.slug == undefined || req.body.slug == null) {
+        erros.push({ text: "Slug inválido" })// Coloca um novo dado no array
+    }
+    if (req.body.nome.length < 2) {
+        erros.push({ text: "Nome de usuário muito pequeno" })
+    }
+    if (erros.length > 0) {
+        res.render("admin/addusuario", { erros: erros })
+    } else {
 
-    var sql = a + b + c + d + e;
-    //res.send(sql); 
-    //var values = [[req.body.nome, req.body.slug]]
-    //var sql="insert into usuario(nome,numero,dt)values("+req.body.nome+","+req.body.slug+",CURRENT_TIMESTAMP)";
-    //var values = [[req.body.nome, req.body.slug]]
-    usudb.connection.query(sql, function (err, result) {
-        if (err) res.send("Erro na Criação do Usuário");
-        res.send("Usuario Criado");
-    })
+        var a = "insert into usuario(nome,numero,dt)values('"
+        var b = req.body.nome;
+        var c = "','"
+        var d = req.body.slug;
+        var e = "',CURRENT_TIMESTAMP)"
+
+        var sql = a + b + c + d + e;
+        usudb.connection.query(sql, function (err, result) {
+            if (err) {
+                //res.send("Erro na Criação do Usuário");
+                req.flash("error_msg","Erro ao cadastrar Usuário ")
+               // res.redirect("/admin/usuario")
+               res.redirect("/admin/usuario/add")
+
+            }
+            //res.send("Usuario Criado");
+            req.flash("success_msg","Usuário cadastrado com sucesso")
+            res.redirect("/admin/usuario")
+        })
+    }
 })
 
 module.exports = router

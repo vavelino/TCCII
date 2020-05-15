@@ -1,3 +1,15 @@
 <h2>Lista de Usuários Cadastrados</h2>
 <hr>
+
+{{#each posts}}
+
+<h1>{{id}} {{nome}} {{numero}}</h1>
+
+<h6>{{dt}}</h6>
+<a href="/admin/deletar/{{id}}"><button>Deletar</button></a>
+<hr>
+{{/each}}
+
+
+<hr>
 <a href="/admin/usuario/add"><button class="btn btn-success">Cadastrar Novo usuário</button></a>
