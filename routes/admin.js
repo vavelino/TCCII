@@ -30,7 +30,18 @@ router.get('/deletar/:id', function (req, res) {
         res.send("Postagem deletada com sucesso");
     })
 })
+router.get('/usuario/deletar/:id', function (req, res) {
 
+    var sql = "DELETE FROM usuario WHERE id =" + req.params.id;
+    usudb.connection.query(sql, function (err, posts, field) {
+        if (err){
+            req.flash("error_msg","Erro ao deletar o Usuário ")
+        }else{
+            req.flash("success_msg","Usuário deletado com sucesso")
+        }
+        res.redirect("/admin/usuario")
+    })
+})
 router.get("/usuario", (req, res) => {
     usudb.connection.query("select * from usuario", function (err, posts, field) {
         if (err) throw err;
@@ -69,11 +80,11 @@ router.post("/usuario/novo", (req, res) => {
                 req.flash("error_msg","Erro ao cadastrar Usuário ")
                // res.redirect("/admin/usuario")
                res.redirect("/admin/usuario/add")
-
-            }
+            }else{
             //res.send("Usuario Criado");
             req.flash("success_msg","Usuário cadastrado com sucesso")
             res.redirect("/admin/usuario")
+            }
         })
     }
 })

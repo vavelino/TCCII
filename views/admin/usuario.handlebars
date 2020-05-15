@@ -3,10 +3,10 @@
 
 {{#each posts}}
 
-<h1>{{id}} {{nome}} {{numero}}</h1>
-
-<h6>{{dt}}</h6>
-<a href="/admin/deletar/{{id}}"><button>Deletar</button></a>
+<h1>{{id}} {{nome}}</h1> 
+<h4>{{numero}}</h4>
+<h6>{{dt}}</h6> 
+<a href="/admin/usuario/deletar/{{id}}"><button class="btn btn-danger">Deletar</button></a>
 <hr>
 {{/each}}
 
