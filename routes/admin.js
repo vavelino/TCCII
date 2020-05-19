@@ -5,7 +5,7 @@ const router = express.Router()
 const usudb = require("../models/Usuaridb")
 
 
-
+/*
 router.get('/cad', function (req, res) {
     res.render('formulario')
 })
@@ -29,7 +29,7 @@ router.get('/deletar/:id', function (req, res) {
         if (err) res.send("Postagem não existe");
         res.send("Postagem deletada com sucesso");
     })
-})
+})*/
 router.get('/usuario/deletar/:id', function (req, res) {
 
     var sql = "DELETE FROM usuario WHERE id =" + req.params.id;

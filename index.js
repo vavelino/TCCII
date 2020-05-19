@@ -3,6 +3,7 @@ const app = express();
 const handlebars = require('express-handlebars');
 const bodyParser = require("body-parser")
 const admin = require('./routes/admin')
+const esp=require('./routes/esp')
 const path = require("path")
 const usudb = require("./models/Usuaridb")
 const session = require("express-session")
@@ -41,15 +42,16 @@ app.use(bodyParser.json())
 app.use(express.static(path.join(__dirname, 'public'))); // bootstrap
 
 //Rotas
-
+/*
 app.get('/', function (req, res) {
     usudb.connection.query("select * from postagems", function (err, posts, field) {
         if (err) throw err;
         res.render('home', { posts: posts })
     })
-})
+})*/
 
 app.use('/admin', admin)
+app.use('/esp', esp)
 
 // tem que ser a ultima
 app.listen(8080, function () {
