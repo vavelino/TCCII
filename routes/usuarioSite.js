@@ -2,6 +2,7 @@ const express = require("express")
 const routersite = express.Router()
 const usudb = require("../models/Usuaridb")
 const bcrypt = require("bcryptjs")
+const passport = require("passport")
 
 routersite.get("/registro", (req, res) => {
     res.render("acesso/registro")
@@ -27,6 +28,8 @@ routersite.post("/registro", (req, res) => {
 
     usudb.connection.query(sql, function (err, result) {
         if (err) {
+            req.flash("error_msg", "Erro durante salvamento do usuário")
+            res.redirect("/")
         } else {
             if (result.length > 0) {
                 erros.push({ text: "Ja existe usuário com esse nome" })
@@ -69,6 +72,12 @@ routersite.post("/registro", (req, res) => {
 routersite.get("/login", (req, res) => {
     res.render("acesso/login")
 })
-
+routersite.post("/login", (req, res, next) => {
+    passport.authenticate("local", {
+        successRedirect: "/",
+        failureRedirect: "/site/login",
+        failureFlash:true
+    })(req,res,next)
+})
 
 module.exports = routersite

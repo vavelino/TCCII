@@ -12,23 +12,31 @@ const usudb = require("./models/Usuaridb")
 const session = require("express-session")
 const flash = require("connect-flash")
 
+const passport=require("passport")
+require("./config/auth")(passport)
+
 
 // Configurações
 //Sessão
 //app.use()  //Tudo que tem o use() é um middle
 //configuracao session
 app.use(session({
-    secret: "Senha",
+    secret: "Controle de Acesso",
     resave: true,
     saveUninitialized: true
 }))
-//configuração flah
+// Passport
+app.use(passport.initialize())
+app.use(passport.session())
+
+//configuração flash
 app.use(flash())
 //Middleware
 app.use((req, res, next) => {
     // Exemplo variavél Global res.locals.nome="Meu nome";
     res.locals.success_msg = req.flash("success_msg")
     res.locals.error_msg = req.flash("error_msg")
+    res.locals.error=req.flash("error")
     next()
 })
 // Template Engine
@@ -57,6 +65,7 @@ app.get('/', function (req, res) {
   
    res.render("home")
 })
+
 app.use('/site', site)
 app.use('/admin', admin)
 app.use('/esp', esp)
