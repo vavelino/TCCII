@@ -29,6 +29,14 @@ connection.query("CREATE TABLE IF NOT EXISTS log (id INT UNSIGNED NOT NULL AUTO_
             console.log('Erro na Criação da Tabela LOG');
         }
     });
+connection.query("CREATE TABLE IF NOT EXISTS usuarioSite (id INT UNSIGNED NOT NULL AUTO_INCREMENT,nome VARCHAR(255) NOT NULL,senha VARCHAR(20) NOT NULL, dt datetime NOT NULL, PRIMARY KEY (id))",
+    function (err, result) {
+        if (!err) {
+            console.log('Tabela usuarioSite Criado com sucesso!');
+        } else {
+            console.log('Erro na Criação da Tabela usuarioSite');
+        }
+    });
 
 module.exports = {
     connection: connection

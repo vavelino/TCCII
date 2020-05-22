@@ -50,6 +50,10 @@ app.get('/', function (req, res) {
     })
 })*/
 
+app.get('/', function (req, res) {
+  
+   res.render("home")
+})
 app.use('/admin', admin)
 app.use('/esp', esp)
 

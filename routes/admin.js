@@ -37,6 +37,12 @@ router.get('/usuario/deletar/:id', function (req, res) {
         if (err) {
             req.flash("error_msg", "Erro ao deletar o Usuário ")
         } else {
+            sql = "SET @count = 0 "
+            usudb.connection.query(sql, function (err, posts, field) { })
+            sql = "UPDATE `usuario` SET `usuario`.`id` = @count:= @count + 1 "
+            usudb.connection.query(sql, function (err, posts, field) { })
+            sql = "ALTER TABLE usuario AUTO_INCREMENT = 0 "
+            usudb.connection.query(sql, function (err, posts, field) { })
             req.flash("success_msg", "Usuário deletado com sucesso")
         }
         res.redirect("/admin/usuario")
