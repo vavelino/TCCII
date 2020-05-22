@@ -5,6 +5,7 @@ const router = express.Router()
 const usudb = require("../models/Usuaridb")
 
 
+
 /*
 router.get('/cad', function (req, res) {
     res.render('formulario')
