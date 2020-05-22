@@ -1,6 +1,7 @@
 const express = require("express")
 
 const routeresp = express.Router()
+const Pilha = require("../models/pilha")
 
 /* Rota para mandar comandos para o ESP
 *res.send("a\n908a75a3\n2")
@@ -12,18 +13,26 @@ const routeresp = express.Router()
 * Parâmetro 2: Pasta que será Modificada
 * 2-) 
 */
+
 routeresp.get("/servertoesp/:id", (req, res) => {
-  if (req.params.id == ESP_1) {
+ // Pilha.pilha.Push("v\n908a75a3\n1")
+  if (req.params.id == 'ESP_1') {
     console.log("GET ID:" + req.params.id)
+    if (Pilha.pilha.GetCount() == 0) {
+      res.send("N")
+    }else{
+     res.send(Pilha.pilha.Pop())  
+    }
   } else {
     console.log("Desconhecido")
   }
+ // console.log(Pilha.pilha.GetCount())
   //usudb.connection.query("select * from usuario", function (err, posts, field) {
   // if (err) throw err;
   // res.json({ nome: 'tobi', valor:'123'})//, valor:5,time:2})
   // res.send("G\n908a75a3\n49000")   
   // res.send("G\n1000\n49000")    
-  res.send("v\n908a75a3\n1")
+  // res.send("v\n908a75a3\n1")
 
   //res.send("T\n1000\n49000")
   //res.sendStatus(status)

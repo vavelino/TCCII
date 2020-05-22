@@ -34,19 +34,48 @@ router.get('/usuario/deletar/:id', function (req, res) {
 
     var sql = "DELETE FROM usuario WHERE id =" + req.params.id;
     usudb.connection.query(sql, function (err, posts, field) {
-        if (err){
-            req.flash("error_msg","Erro ao deletar o Usuário ")
-        }else{
-            req.flash("success_msg","Usuário deletado com sucesso")
+        if (err) {
+            req.flash("error_msg", "Erro ao deletar o Usuário ")
+        } else {
+            req.flash("success_msg", "Usuário deletado com sucesso")
         }
         res.redirect("/admin/usuario")
     })
 })
+router.post("/usuario/editar", (req, res) => {
+
+    var sql = "UPDATE usuario SET nome='" + req.body.nome + "',numero='" + req.body.numero + "'where id=" + req.body.id
+
+
+
+    usudb.connection.query(sql, function (err, dados, field) {
+
+        if ((err) || (dados.affectedRows == 0)) {
+            req.flash("error_msg", "Esse usuário não existe");
+        } else {
+            req.flash("success_msg", "Usuário editado com sucesso")
+        }
+        res.redirect("/admin/usuario");
+    })
+})
+router.get("/usuario/edit/:id", (req, res) => {
+    var sql = "select * from usuario where id = " + req.params.id;
+    usudb.connection.query(sql, function (err, dados, field) {
+        if ((err) || (dados.length <= 0)) {
+            //throw err;
+            req.flash("error_msg", "Esse usuário não existe");
+            res.redirect("/admin/usuario");
+        } else {
+            res.render('admin/editusuario', { dados: dados })
+        }
+    })
+})
 router.get("/usuario", (req, res) => {
     usudb.connection.query("select * from usuario", function (err, posts, field) {
+        // console.log(posts)
         if (err) throw err;
         res.render('admin/usuario', { posts: posts })
-    })    
+    })
 })
 router.get("/usuario/add", (req, res) => {
     res.render("admin/addusuario")
@@ -77,13 +106,13 @@ router.post("/usuario/novo", (req, res) => {
         usudb.connection.query(sql, function (err, result) {
             if (err) {
                 //res.send("Erro na Criação do Usuário");
-                req.flash("error_msg","Erro ao cadastrar Usuário ")
-               // res.redirect("/admin/usuario")
-               res.redirect("/admin/usuario/add")
-            }else{
-            //res.send("Usuario Criado");
-            req.flash("success_msg","Usuário cadastrado com sucesso")
-            res.redirect("/admin/usuario")
+                req.flash("error_msg", "Erro ao cadastrar Usuário ")
+                // res.redirect("/admin/usuario")
+                res.redirect("/admin/usuario/add")
+            } else {
+                //res.send("Usuario Criado");
+                req.flash("success_msg", "Usuário cadastrado com sucesso")
+                res.redirect("/admin/usuario")
             }
         })
     }
