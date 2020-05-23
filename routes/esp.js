@@ -2,6 +2,7 @@ const express = require("express")
 
 const routeresp = express.Router()
 const Pilha = require("../models/pilha")
+const usudb = require("../models/Usuaridb")
 
 /* Rota para mandar comandos para o ESP
 *res.send("a\n908a75a3\n2")
@@ -61,7 +62,7 @@ E  $ existe ou não(T e F) $ ID perguntado
 */
 
 routeresp.post("/esptoserver", (req, res) => {
-  console.log(req.body.a)
+  //console.log(req.body.a)
   pilhaEnvio.Push(req.body.a);
   //res.send(200) //ok
   res.sendStatus(200) //OK
@@ -127,6 +128,7 @@ var myInt2 = setInterval(function () {
             switch (informação) {
               case 0:
                 log += mensgrecebida[a];
+                pilhaPedido.Push("R\n" + log);
                 break;
               case 3:
                 ID += mensgrecebida[a];
@@ -141,6 +143,21 @@ var myInt2 = setInterval(function () {
           }
         }
         console.log('/log= ' + log + '/ID= ' + ID + '/aute= ' + autentificação + '/data= ' + data)
+        var a = "insert into log(numero,aute,tempo,dt)values('"
+        var b = ID;
+        var c = "','"
+        var d = autentificação
+        var e = "','"
+        var f = data;
+        var g = "',CURRENT_TIMESTAMP)"
+        var sql = a + b + c + d + e+f+g;
+        usudb.connection.query(sql, function (err, result) {
+          if (err) {
+            console.log("Erro ao gravar LOG")
+          } else {
+            console.log("LOG gravado com sucesso")
+          }
+        })
         break;
       case 'E':
         autentificação = mensgrecebida[2];
@@ -155,6 +172,14 @@ var myInt2 = setInterval(function () {
 
 
 }, 1000);
+
+routeresp.get("/log", (req, res) => {
+  usudb.connection.query("select * from log", function (err, posts, field) {
+      // console.log(posts)
+      if (err) throw err;
+      res.render('log/logesp', { posts: posts })
+  })
+})
 
 
 
