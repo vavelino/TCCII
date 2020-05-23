@@ -13,20 +13,24 @@ const Pilha = require("../models/pilha")
 * Parâmetro 2: Pasta que será Modificada
 * 2-) 
 */
+var tempo = 0;
+var pilhaPedido = Pilha.pilha;
+var pilhaEnvio = Pilha.pilha2;
 
 routeresp.get("/servertoesp/:id", (req, res) => {
- // Pilha.pilha.Push("v\n908a75a3\n1")
+  // Pilha.pilha.Push("v\n908a75a3\n1")
   if (req.params.id == 'ESP_1') {
+    tempo++
     console.log("GET ID:" + req.params.id)
-    if (Pilha.pilha.GetCount() == 0) {
+    if (pilhaPedido.GetCount() == 0) {
       res.send("N")
-    }else{
-     res.send(Pilha.pilha.Pop())  
+    } else {
+      res.send(pilhaPedido.Pop())
     }
   } else {
     console.log("Desconhecido")
   }
- // console.log(Pilha.pilha.GetCount())
+  // console.log(Pilha.pilha.GetCount())
   //usudb.connection.query("select * from usuario", function (err, posts, field) {
   // if (err) throw err;
   // res.json({ nome: 'tobi', valor:'123'})//, valor:5,time:2})
@@ -58,6 +62,7 @@ E  $ existe ou não(T e F) $ ID perguntado
 
 routeresp.post("/esptoserver", (req, res) => {
   console.log(req.body.a)
+  pilhaEnvio.Push(req.body.a);
   //res.send(200) //ok
   res.sendStatus(200) //OK
   // console.log(req.body.b)
@@ -65,6 +70,93 @@ routeresp.post("/esptoserver", (req, res) => {
   // console.log(req.body.d)
   //  console.log(req.body.e)   
 })
+// Responsável por controlar os pedidos
+var umavez;
+var myInt = setInterval(function () {
+  if (tempo == 4) {
+    tempo = 0
+  }
+  if (umavez != tempo) {
+    switch (tempo) {
+      case 0:
+        pilhaPedido.Push("v"); // verifica se está vivo
+        break;
+      case 1:
+        pilhaPedido.Push("L"); // verifica se está vivo
+        break;
+      case 2:
+        pilhaPedido.Push("C\n1000\n1");
+        break;
+      case 3:
+        pilhaPedido.Push("a\n1000\n1");
+        break;
+      case 4:
+        break;
+      case 5:
+        break;
+    }
+    console.log("tempo=" + tempo);
+    umavez = tempo;
+  }
+
+}, 1000);
+
+//Tratamento dos dados recebidos
+var myInt2 = setInterval(function () {
+  var mensgrecebida
+  var log = ""
+  var ID = ""
+  var autentificação = ""
+  var data = ""
+  var informação = 0
+
+  if (pilhaEnvio.GetCount() != 0) {
+    mensgrecebida = pilhaEnvio.Pop();
+    //console.log(mensgrecebida)
+    switch (mensgrecebida[0]) {
+      case 'v':
+        console.log("ta vivo")
+        break;
+      case 'L'://    L/LOG/0.TXTa9ff582c$N$10
+
+        for (var a = 6; a < mensgrecebida.length; a++) {
+          var b = (mensgrecebida[a] == '.') || (mensgrecebida[a] == 'T') || (mensgrecebida[a] == '$')
+          if (b) {
+            informação++
+          } else {
+            switch (informação) {
+              case 0:
+                log += mensgrecebida[a];
+                break;
+              case 3:
+                ID += mensgrecebida[a];
+                break;
+              case 4:
+                autentificação += mensgrecebida[a];
+                break;
+              case 5:
+                data += mensgrecebida[a];
+                break;
+            }
+          }
+        }
+        console.log('/log= ' + log + '/ID= ' + ID + '/aute= ' + autentificação + '/data= ' + data)
+        break;
+      case 'E':
+        autentificação = mensgrecebida[2];
+        for (var a = 4; a < mensgrecebida.length; a++) {
+          ID += mensgrecebida[a];
+        }
+        console.log('/ID= ' + ID + '/aute= ' + autentificação)
+        break;
+    }
+
+  }
+
+
+}, 1000);
+
+
 
 
 module.exports = routeresp
