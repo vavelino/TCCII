@@ -46,8 +46,14 @@ class Pilha {
     }
 }
 let pilha = new Pilha();
+let pilha2 = new Pilha();
 module.exports = {
-    pilha: pilha
+    pilha: pilha,
+    pilha2: pilha2
+}
+/*
+module.exports = {
+    Pilha: Pilha
 }
 
 /*
