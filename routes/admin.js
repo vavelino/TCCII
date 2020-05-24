@@ -93,8 +93,8 @@ router.post("/usuario/novo", (req, res) => {
     if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
         erros.push({ text: "Nome inválido" })// Coloca um novo dado no array
     }
-    if (!req.body.slug || typeof req.body.slug == undefined || req.body.slug == null) {
-        erros.push({ text: "Slug inválido" })// Coloca um novo dado no array
+    if (!req.body.tag || typeof req.body.tag == undefined || req.body.tag == null) {
+        erros.push({ text: "tag inválido" })// Coloca um novo dado no array
     }
     if (req.body.nome.length < 2) {
         erros.push({ text: "Nome de usuário muito pequeno" })
@@ -106,7 +106,7 @@ router.post("/usuario/novo", (req, res) => {
         var a = "insert into usuario(nome,numero,dt)values('"
         var b = req.body.nome;
         var c = "','"
-        var d = req.body.slug;
+        var d = req.body.tag;
         var e = "',CURRENT_TIMESTAMP)"
 
         var sql = a + b + c + d + e;
