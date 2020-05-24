@@ -14,9 +14,15 @@ const usudb = require("../models/Usuaridb")
 * Parâmetro 2: Pasta que será Modificada
 * 2-) 
 */
+// Variavéis
 var tempo = 0;
 var pilhaPedido = Pilha.pilha;
 var pilhaEnvio = Pilha.pilha2;
+// Função com a função de adicionar na pilha de pedidos
+function adicionarnaPilha(informação) {
+   pilhaPedido.Push(informação);
+}
+
 
 routeresp.get("/servertoesp/:id", (req, res) => {
   // Pilha.pilha.Push("v\n908a75a3\n1")
@@ -89,7 +95,7 @@ var myInt = setInterval(function () {
         pilhaPedido.Push("C\n1000\n1");
         break;
       case 3:
-        pilhaPedido.Push("a\n1000\n1");
+       // pilhaPedido.Push("a\n1000\n1");
         break;
       case 4:
         break;
@@ -150,7 +156,7 @@ var myInt2 = setInterval(function () {
         var e = "','"
         var f = data;
         var g = "',CURRENT_TIMESTAMP)"
-        var sql = a + b + c + d + e+f+g;
+        var sql = a + b + c + d + e + f + g;
         usudb.connection.query(sql, function (err, result) {
           if (err) {
             console.log("Erro ao gravar LOG")
@@ -175,9 +181,9 @@ var myInt2 = setInterval(function () {
 
 routeresp.get("/log", (req, res) => {
   usudb.connection.query("select * from log", function (err, posts, field) {
-      // console.log(posts)
-      if (err) throw err;
-      res.render('log/logesp', { posts: posts })
+    // console.log(posts)
+    if (err) throw err;
+    res.render('log/logesp', { posts: posts })
   })
 })
 
