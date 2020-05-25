@@ -3,7 +3,7 @@ const router = express.Router()
 //const Post = require('../models/Post')
 //const banco = require('../models/db')
 const usudb = require("../models/Usuaridb")
-const esp=require("../routes/esp")
+const esp = require("../routes/esp")
 
 
 
@@ -33,7 +33,14 @@ router.get('/deletar/:id', function (req, res) {
     })
 })*/
 router.get('/usuario/deletar/:id', function (req, res) {
-
+    var sql = "select * from usuario where id=" + req.params.id;
+    usudb.connection.query(sql, function (err, posts, field) {
+       // console.log(posts[0].numero)
+        if (err) {
+        } else {
+            esp.adicionarnaPilha("r\n" + posts[0].numero + "\n1")
+        }
+    })
     var sql = "DELETE FROM usuario WHERE id =" + req.params.id;
     usudb.connection.query(sql, function (err, posts, field) {
         if (err) {
@@ -108,8 +115,8 @@ router.post("/usuario/novo", (req, res) => {
         var b = req.body.nome;
         var c = "','"
         var d = req.body.tag;
-        var e = "',CURRENT_TIMESTAMP)"       
-        esp.adicionarnaPilha("a\n"+req.body.tag+"\n1")
+        var e = "',CURRENT_TIMESTAMP)"
+        esp.adicionarnaPilha("a\n" + req.body.tag + "\n1")
         var sql = a + b + c + d + e;
         usudb.connection.query(sql, function (err, result) {
             if (err) {

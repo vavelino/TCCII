@@ -18,19 +18,24 @@ const usudb = require("../models/Usuaridb")
 var tempo = 0;
 var pilhaPedido = Pilha.pilha;
 var pilhaEnvio = Pilha.pilha2;
+var pilhaPedidoExterno = Pilha.pilha3;
 // Função com a função de adicionar na pilha de pedidos
 
 
 
 routeresp.get("/servertoesp/:id", (req, res) => {
-  // Pilha.pilha.Push("v\n908a75a3\n1")
+  // Pilha.pilha.Push("r\n908a75a3\n1")
   if (req.params.id == 'ESP_1') {
-    tempo++
-    console.log("GET ID:" + req.params.id)
-    if (pilhaPedido.GetCount() == 0) {
-      res.send("N")
+    if (pilhaPedidoExterno.GetCount()==0) {
+      tempo++
+      console.log("GET ID:" + req.params.id)
+      if (pilhaPedido.GetCount() == 0) {
+        res.send("N")
+      } else {
+        res.send(pilhaPedido.Pop())
+      }
     } else {
-      res.send(pilhaPedido.Pop())
+      res.send(pilhaPedidoExterno.Pop())
     }
   } else {
     console.log("Desconhecido")
@@ -90,10 +95,10 @@ var myInt = setInterval(function () {
         pilhaPedido.Push("L"); // verifica se está vivo
         break;
       case 2:
-        pilhaPedido.Push("C\n1000\n1");
+      //  pilhaPedido.Push("C\n1000\n1");
         break;
       case 3:
-       // pilhaPedido.Push("a\n1000\n1");
+        // pilhaPedido.Push("a\n1000\n1");
         break;
       case 4:
         break;
@@ -178,7 +183,9 @@ var myInt2 = setInterval(function () {
 }, 1000);
 
 routeresp.get("/log", (req, res) => {
-  usudb.connection.query("select * from log", function (err, posts, field) {
+  sql =" select	u.nome as nome,  l.id as id,   l.numero as numero,    l.aute as aute,    l.tempo as tempo,    l.dt as dt       from usuario u, log l	where u.numero = l.numero;"
+  //usudb.connection.query("select * from log", function (err, posts, field) {
+    usudb.connection.query(sql, function (err, posts, field) {
     // console.log(posts)
     if (err) throw err;
     res.render('log/logesp', { posts: posts })
@@ -190,9 +197,9 @@ routeresp.get("/log", (req, res) => {
 
 //module.exports = routeresp
 
-module.exports=routeresp
-module.exports.adicionarnaPilha=(informação)=>{
-  pilhaPedido.Push(informação);
+module.exports = routeresp
+module.exports.adicionarnaPilha = (informação) => {
+  pilhaPedidoExterno.Push(informação);
 
 }
 /*
