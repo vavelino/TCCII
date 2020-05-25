@@ -26,7 +26,7 @@ var pilhaPedidoExterno = Pilha.pilha3;
 routeresp.get("/servertoesp/:id", (req, res) => {
   // Pilha.pilha.Push("r\n908a75a3\n1")
   if (req.params.id == 'ESP_1') {
-    if (pilhaPedidoExterno.GetCount()==0) {
+    if (pilhaPedidoExterno.GetCount() == 0) {
       tempo++
       console.log("GET ID:" + req.params.id)
       if (pilhaPedido.GetCount() == 0) {
@@ -95,7 +95,7 @@ var myInt = setInterval(function () {
         pilhaPedido.Push("L"); // verifica se está vivo
         break;
       case 2:
-      //  pilhaPedido.Push("C\n1000\n1");
+        //  pilhaPedido.Push("C\n1000\n1");
         break;
       case 3:
         // pilhaPedido.Push("a\n1000\n1");
@@ -152,6 +152,12 @@ var myInt2 = setInterval(function () {
           }
         }
         console.log('/log= ' + log + '/ID= ' + ID + '/aute= ' + autentificação + '/data= ' + data)
+        if (autentificação == 'N') {
+          autentificação = 'Não autorizado'
+        }
+        if (autentificação == 'A') {
+          autentificação = 'Autorizado'
+        }
         var a = "insert into log(numero,aute,tempo,dt)values('"
         var b = ID;
         var c = "','"
@@ -183,9 +189,26 @@ var myInt2 = setInterval(function () {
 }, 1000);
 
 routeresp.get("/log", (req, res) => {
-  sql =" select	u.nome as nome,  l.id as id,   l.numero as numero,    l.aute as aute,    l.tempo as tempo,    l.dt as dt       from usuario u, log l	where u.numero = l.numero;"
+  sql = " select	u.nome as nome,    l.id as id,    l.numero as numero,    l.aute as aute,    l.tempo as tempo,    l.dt as dt     from usuario u    right OUTER JOIN  log l	on u.numero = l.numero"
   //usudb.connection.query("select * from log", function (err, posts, field) {
-    usudb.connection.query(sql, function (err, posts, field) {
+
+  usudb.connection.query(sql, function (err, posts, field) {
+    //console.log(posts.length)
+    for (a = 0; a < posts.length; a++) {
+      if (posts[a].nome == null) {
+        posts[a].nome = 'Desconhecido'
+        //console.log(posts[a].dt)
+        var dataInput =posts[a].dt
+        data = new Date(dataInput);
+       var dataFormatada = ("0" + data.getDate()).substr(-2) + "/" 
+    + ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear();
+      //dataFormatada = data.toLocaleDateString('pt-BR', {timeZone: 'UTC'});
+      console.log(dataFormatada)
+
+      }
+    }
+    //posts.nome
+
     // console.log(posts)
     if (err) throw err;
     res.render('log/logesp', { posts: posts })

@@ -21,7 +21,7 @@ connection.query("CREATE TABLE IF NOT EXISTS usuario (id INT UNSIGNED NOT NULL A
         }
     });
 
-connection.query("CREATE TABLE IF NOT EXISTS log (id INT UNSIGNED NOT NULL AUTO_INCREMENT,numero VARCHAR(10) NOT NULL,aute VARCHAR(2),tempo VARCHAR(100) NOT NULL, dt datetime NOT NULL, PRIMARY KEY (id))",
+connection.query("CREATE TABLE IF NOT EXISTS log (id INT UNSIGNED NOT NULL AUTO_INCREMENT,numero VARCHAR(10) NOT NULL,aute VARCHAR(16),tempo VARCHAR(100) NOT NULL, dt datetime NOT NULL, PRIMARY KEY (id))",
     function (err, result) {
         if (!err) {
             console.log('Tabela LOG Criado com sucesso!');
