@@ -1,5 +1,7 @@
 const express = require("express")
 
+const moment = require('moment');
+
 const routeresp = express.Router()
 const Pilha = require("../models/pilha")
 const usudb = require("../models/Usuaridb")
@@ -187,32 +189,39 @@ var myInt2 = setInterval(function () {
 
 
 }, 1000);
-
+// 
+function addZero(i) {
+  if (i < 10) {
+    i = "0" + i;
+  }
+  return i;
+}
 routeresp.get("/log", (req, res) => {
-  sql = " select	u.nome as nome,    l.id as id,    l.numero as numero,    l.aute as aute,    l.tempo as tempo,    l.dt as dt     from usuario u    right OUTER JOIN  log l	on u.numero = l.numero"
+  sql = " select	u.nome as nome,    l.id as id,    l.numero as numero,    l.aute as aute,    l.tempo as tempo,    l.dt as dt     from usuario u    right OUTER JOIN  log l	on u.numero = l.numero ORDER BY id ASC"
+  
   //usudb.connection.query("select * from log", function (err, posts, field) {
-
+    
   usudb.connection.query(sql, function (err, posts, field) {
     //console.log(posts.length)
     for (a = 0; a < posts.length; a++) {
       if (posts[a].nome == null) {
         posts[a].nome = 'Desconhecido'
         //console.log(posts[a].dt)
-        var dataInput =posts[a].dt
-        data = new Date(dataInput);
-       var dataFormatada = ("0" + data.getDate()).substr(-2) + "/" 
-    + ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear();
-      //dataFormatada = data.toLocaleDateString('pt-BR', {timeZone: 'UTC'});
-      console.log(dataFormatada)
-
       }
+      var dataInput = posts[a].dt
+      data = new Date(dataInput);
+      var dataFormatada = ("0" + data.getDate()).substr(-2) + "/"
+        + ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear() + " " + addZero(data.getHours()) + ":" +addZero( data.getMinutes()) + ":" + addZero(data.getSeconds());
+      posts[a].dt = dataFormatada;
     }
     //posts.nome
 
     // console.log(posts)
     if (err) throw err;
     res.render('log/logesp', { posts: posts })
+    //res.render('log/logesp', { posts: posts })
   })
+  
 })
 
 
