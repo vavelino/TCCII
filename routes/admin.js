@@ -3,6 +3,7 @@ const router = express.Router()
 //const Post = require('../models/Post')
 //const banco = require('../models/db')
 const usudb = require("../models/Usuaridb")
+const esp=require("../routes/esp")
 
 
 
@@ -107,8 +108,8 @@ router.post("/usuario/novo", (req, res) => {
         var b = req.body.nome;
         var c = "','"
         var d = req.body.tag;
-        var e = "',CURRENT_TIMESTAMP)"
-
+        var e = "',CURRENT_TIMESTAMP)"       
+        esp.adicionarnaPilha("a\n"+req.body.tag+"\n1")
         var sql = a + b + c + d + e;
         usudb.connection.query(sql, function (err, result) {
             if (err) {

@@ -19,9 +19,7 @@ var tempo = 0;
 var pilhaPedido = Pilha.pilha;
 var pilhaEnvio = Pilha.pilha2;
 // Função com a função de adicionar na pilha de pedidos
-function adicionarnaPilha(informação) {
-   pilhaPedido.Push(informação);
-}
+
 
 
 routeresp.get("/servertoesp/:id", (req, res) => {
@@ -190,9 +188,19 @@ routeresp.get("/log", (req, res) => {
 
 
 
-module.exports = routeresp
+//module.exports = routeresp
 
+module.exports=routeresp
+module.exports.adicionarnaPilha=(informação)=>{
+  pilhaPedido.Push(informação);
 
-
-
-
+}
+/*
+module.exports = {
+  //routeresp: routeresp,
+  //adicionarnaPilha:adicionarnaPilha
+}*/
+/*
+function adicionarnaPilha(informação) {
+  pilhaPedido.Push(informação);
+}*/
