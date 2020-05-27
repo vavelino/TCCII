@@ -45,13 +45,15 @@ class Pilha {
         return null;
     }
 }
-let pilha = new Pilha();
-let pilha2 = new Pilha();
-let pilha3 = new Pilha();
+let pilha = new Pilha();  // Pilha de pedido
+let pilha2 = new Pilha(); // Pilha de envio
+let pilha3 = new Pilha(); // Adiciona e excrui usuários 
+let pilha4 = new Pilha(); // Pilha de análise de incoerrência
 module.exports = {
     pilha: pilha,
     pilha2: pilha2,
-    pilha3: pilha3
+    pilha3: pilha3,
+    pilha4: pilha4
 }
 /*
 module.exports = {

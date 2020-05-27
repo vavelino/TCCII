@@ -5,10 +5,12 @@ const usudb = require("../models/Usuaridb")
 
 
 // Variavéis
-var tempo = 0;
+var tempo = 0; // Variável para controle de pedidos internos
+var tempoIncoerencia=0;// Variável para controle de incoerrências
 var pilhaPedido = Pilha.pilha;
 var pilhaEnvio = Pilha.pilha2;
-var pilhaPedidoExterno = Pilha.pilha3;
+var pilhaPedidoExterno = Pilha.pilha3; // Adiciona e excrui usuários
+var pilhaincoerrencia = Pilha.pilha4; // Pilha de análise de incoerrência
 
 
 routeresp.get("/servertoesp/:id", (req, res) => {
@@ -23,7 +25,7 @@ routeresp.get("/servertoesp/:id", (req, res) => {
         res.send(pilhaPedido.Pop())
       }
     } else {
-      res.send(pilhaPedidoExterno.Pop())
+      res.send(pilhaPedidoExterno.Pop()) // Pedido externo tem prioridade maior
     }
   } else {
     console.log("Desconhecido")
@@ -185,15 +187,30 @@ routeresp.get("/log/delete", (req, res) => {
     })
   })
 })
-// fUNÇÃO PARA DE TEMPOS EM TEMPOS VERFICAR USUÁRIOS CADASTRADOS NO ESP
+//DE TEMPOS EM TEMPOS VERFICAR OS USUÁRIOS CADASTRADOS NO ESP
 
 var verificaIncoerencia = setInterval(function () {
-  if (umavez != tempo) {
-    tempo = 0
-    pilhaPedido.Push("L"); // v 
-    umavez = tempo;
-  }
-}, 1000);
+  tempoIncoerencia=tempo;
+  pilhaincoerrencia.Push("T\n200")  // Altera Tempo de requisições get do esp para 200 ms
+  agora(); // Envio da hora do servidor para o esp
+  var sql = " select * from usuario"
+  usudb.connection.query(sql, function (err, posts, field) {
+    for (a = 0; a < posts.length; a++) {
+      // console.log(posts[a]);
+      pilhaincoerrencia.Push("a\n" + posts[a].nome + "$" + posts[a].tag + "\n2") // Grava tudo na pasta 2 a de backup
+    }
+    pilhaincoerrencia.Push("p\na\n2") // Troca a pasta da leitura do esp para a pasta 2
+    pilhaincoerrencia.Push("B\na\n1") // Excrui os arquivos dentro da pasta 1
+    for (a = 0; a < posts.length; a++) {
+      // console.log(posts[a]);
+      pilhaincoerrencia.Push("a\n" + posts[a].nome + "$" + posts[a].tag + "\n1") // Grava tudo na pasta 1
+    }
+    pilhaincoerrencia.Push("p\na\n1") // Troca a pasta da leitura do esp para a pasta 1
+    pilhaincoerrencia.Push("B\na\n2") // Excrui os arquivos dentro da pasta 2
+    pilhaincoerrencia.Push("G\na")  // Altera Tempo de requisições get do esp para o padrão
+  })
+
+}, 10000);
 
 
 
