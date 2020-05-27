@@ -14,36 +14,61 @@ var pilhaPedidoExterno = Pilha.pilha3; // Adiciona e excrui usuários
 var pilhaincoerrencia = Pilha.pilha4; // Pilha de análise de incoerrência
 var semaforoincoerrencia = false;// Indica quando as incoerencias estão rodando
 
-
+var ae = 0;
 routeresp.get("/servertoesp/:id", (req, res) => {
   // Pilha.pilha.Push("r\n908a75a3\n1")
-  esp.adicionarnaPilha("a\n" + req.body.nome+"$"+req.body.tag+"\n1")
+  //res.send("P\n"+"c"+"\n2");
+  //res.send("B\n"+"c"+"\n2");
+  res.send("N")
+  ae=2;
+  switch (ae) {
+    case 0:
+      res.send("a\n"+"branco$a9ff582c"+"\n1");
+      
+      ae++
+      break;
+    case 1:
+      res.send("a\n" + "Azul$908a75a3" + "\n2")
+      ae++
+      break;
+    case 2:
+      //res.send("N")
+      //ae=2;
+      break;
+      default:
+         
+        break;
+      
+  }
+  
 
 
 
 
-  if (req.params.id == 'ESP_1') {
-    if (pilhaPedidoExterno.GetCount() == 0) {
-      if (pilhaincoerrencia.GetCount() == 0) {
-        if (tempo > 1000000) {
-          temp = -1;
+  /*
+  
+    if (req.params.id == 'ESP_1') {
+      if (pilhaPedidoExterno.GetCount() == 0) {
+        if (pilhaincoerrencia.GetCount() == 0) {
+          if (tempo > 1000000) {
+            temp = -1;
+          }
+          tempo++
+          console.log("GET ID:" + req.params.id)
+          if (pilhaPedido.GetCount() == 0) {
+            res.send("N")
+          } else {
+            res.send(pilhaPedido.Pop())
+          }
+        } else { // Caso haja pedido de incoerência
+          res.send(pilhaincoerrencia.Pop())
         }
-        tempo++
-        console.log("GET ID:" + req.params.id)
-        if (pilhaPedido.GetCount() == 0) {
-          res.send("N")
-        } else {
-          res.send(pilhaPedido.Pop())
-        }
-      } else { // Caso haja pedido de incoerência
-        res.send(pilhaincoerrencia.Pop())
+      } else {
+        res.send(pilhaPedidoExterno.Pop()) // Pedido externo tem prioridade maior
       }
     } else {
-      res.send(pilhaPedidoExterno.Pop()) // Pedido externo tem prioridade maior
-    }
-  } else {
-    console.log("Desconhecido")
-  }
+      console.log("Desconhecido")
+    }*/
 })
 
 
@@ -56,7 +81,7 @@ routeresp.post("/esptoserver", (req, res) => {
 var Pedidos = setInterval(function () {
   if (semaforoincoerrencia == false) {
     if (tempointerno != tempo) {
-     // pilhaPedido.Push("L"); // v 
+      // pilhaPedido.Push("L"); // v 
       tempointerno = tempo;
     }
   }
@@ -202,12 +227,13 @@ routeresp.get("/log/delete", (req, res) => {
   })
 })
 //DE TEMPOS EM TEMPOS VERFICAR OS USUÁRIOS CADASTRADOS NO ESP
-/*
+
 var verificaIncoerencia = setInterval(function () {
   semaforoincoerrencia = true;
   // tempoIncoerencia = tempo;
   pilhaincoerrencia.Push("T\n200")  // Altera Tempo de requisições get do esp para 200 ms
   agora(); // Envio da hora do servidor para o esp
+  pilhaincoerrencia.Push("B\na\n2") // Excrui os arquivos dentro da pasta 2
   var sql = " select * from usuario"
   usudb.connection.query(sql, function (err, posts, field) {
     for (a = 0; a < posts.length; a++) {
@@ -226,7 +252,7 @@ var verificaIncoerencia = setInterval(function () {
     pilhaincoerrencia.Push("G\na")  // Altera Tempo de requisições get do esp para o padrão
   })
   semaforoincoerrencia = false;
-}, 50000);*/
+}, 50000);
 
 
 
