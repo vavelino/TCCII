@@ -2,6 +2,7 @@ const express = require("express")
 const routeresp = express.Router()
 const Pilha = require("../models/pilha")
 const usudb = require("../models/Usuaridb")
+const Filas=require("../models/filas")
 
 
 // Variavéis
@@ -12,11 +13,12 @@ var pilhaPedido = Pilha.pilha;
 var pilhaEnvio = Pilha.pilha2;
 var pilhaPedidoExterno = Pilha.pilha3; // Adiciona e excrui usuários
 var pilhaincoerrencia = Pilha.pilha4; // Pilha de análise de incoerrência
+var 
 var semaforoincoerrencia = false;// Indica quando as incoerencias estão rodando
 
 var ae = 0;
 routeresp.get("/servertoesp/:id", (req, res) => {
-  // Pilha.pilha.Push("r\n908a75a3\n1")
+  /*// Pilha.pilha.Push("r\n908a75a3\n1")
   //res.send("P\n"+"c"+"\n2");
   //res.send("B\n"+"c"+"\n2");
   res.send("N")
@@ -39,36 +41,36 @@ routeresp.get("/servertoesp/:id", (req, res) => {
          
         break;
       
-  }
-  
+  }*/
 
 
 
 
-  /*
-  
-    if (req.params.id == 'ESP_1') {
-      if (pilhaPedidoExterno.GetCount() == 0) {
-        if (pilhaincoerrencia.GetCount() == 0) {
-          if (tempo > 1000000) {
-            temp = -1;
-          }
-          tempo++
-          console.log("GET ID:" + req.params.id)
-          if (pilhaPedido.GetCount() == 0) {
-            res.send("N")
-          } else {
-            res.send(pilhaPedido.Pop())
-          }
-        } else { // Caso haja pedido de incoerência
-          res.send(pilhaincoerrencia.Pop())
+
+
+
+  if (req.params.id == 'ESP_1') {
+    if (pilhaPedidoExterno.GetCount() == 0) {
+      if (pilhaincoerrencia.GetCount() == 0) {
+        if (tempo > 1000000) {
+          temp = -1;
         }
-      } else {
-        res.send(pilhaPedidoExterno.Pop()) // Pedido externo tem prioridade maior
+        tempo++
+        console.log("GET ID:" + req.params.id)
+        if (pilhaPedido.GetCount() == 0) {
+          res.send("N")
+        } else {
+          res.send(pilhaPedido.Pop())
+        }
+      } else { // Caso haja pedido de incoerência
+        res.send(pilhaincoerrencia.Pop()) // Segunda prioridade
       }
     } else {
-      console.log("Desconhecido")
-    }*/
+      res.send(pilhaPedidoExterno.Pop()) // Pedido externo tem prioridade maior
+    }
+  } else {
+    console.log("Desconhecido")
+  }
 })
 
 
@@ -229,29 +231,31 @@ routeresp.get("/log/delete", (req, res) => {
 //DE TEMPOS EM TEMPOS VERFICAR OS USUÁRIOS CADASTRADOS NO ESP
 
 var verificaIncoerencia = setInterval(function () {
-  semaforoincoerrencia = true;
-  // tempoIncoerencia = tempo;
-  pilhaincoerrencia.Push("T\n200")  // Altera Tempo de requisições get do esp para 200 ms
-  agora(); // Envio da hora do servidor para o esp
-  pilhaincoerrencia.Push("B\na\n2") // Excrui os arquivos dentro da pasta 2
-  var sql = " select * from usuario"
-  usudb.connection.query(sql, function (err, posts, field) {
-    for (a = 0; a < posts.length; a++) {
-      // console.log(posts[a]);
-      pilhaincoerrencia.Push("a\n" + posts[a].nome + "$" + posts[a].tag + "\n2") // Grava tudo na pasta 2 a de backup
-    }
-    pilhaincoerrencia.Push("p\na\n2") // Troca a pasta da leitura do esp para a pasta 2
-    pilhaincoerrencia.Push("B\na\n1") // Excrui os arquivos dentro da pasta 1
-    for (a = 0; a < posts.length; a++) {
-      console.log("a\n" + posts[a].nome + "$" + posts[a].numero + "\n1");
-
-      pilhaincoerrencia.Push("a\n" + posts[a].nome + "$" + posts[a].tag + "\n1") // Grava tudo na pasta 1
-    }
-    pilhaincoerrencia.Push("p\na\n1") // Troca a pasta da leitura do esp para a pasta 1
+  if (semaforoincoerrencia == false) {
+    semaforoincoerrencia = true;
+    // tempoIncoerencia = tempo;
+    pilhaincoerrencia.Push("T\n200")  // Altera Tempo de requisições get do esp para 200 ms
+    agora(); // Envio da hora do servidor para o esp
     pilhaincoerrencia.Push("B\na\n2") // Excrui os arquivos dentro da pasta 2
-    pilhaincoerrencia.Push("G\na")  // Altera Tempo de requisições get do esp para o padrão
-  })
-  semaforoincoerrencia = false;
+    var sql = " select * from usuario"
+    usudb.connection.query(sql, function (err, posts, field) {
+      for (a = 0; a < posts.length; a++) {
+        // console.log(posts[a]);
+        pilhaincoerrencia.Push("a\n" + posts[a].nome + "$" + posts[a].tag + "\n2") // Grava tudo na pasta 2 a de backup
+      }
+      pilhaincoerrencia.Push("p\na\n2") // Troca a pasta da leitura do esp para a pasta 2
+      pilhaincoerrencia.Push("B\na\n1") // Excrui os arquivos dentro da pasta 1
+      for (a = 0; a < posts.length; a++) {
+        console.log("a\n" + posts[a].nome + "$" + posts[a].numero + "\n1");
+
+        pilhaincoerrencia.Push("a\n" + posts[a].nome + "$" + posts[a].tag + "\n1") // Grava tudo na pasta 1
+      }
+      pilhaincoerrencia.Push("p\na\n1") // Troca a pasta da leitura do esp para a pasta 1
+      pilhaincoerrencia.Push("B\na\n2") // Excrui os arquivos dentro da pasta 2
+      pilhaincoerrencia.Push("G\na")  // Altera Tempo de requisições get do esp para o padrão
+    })
+    semaforoincoerrencia = false;
+  }
 }, 50000);
 
 

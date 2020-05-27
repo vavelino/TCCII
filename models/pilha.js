@@ -31,7 +31,7 @@ class Pilha {
             return out.data;
         }
         return null;
-    }
+    }   
     DisplayAll = function () {
         if (this._top) {
             let arr = new Array();
