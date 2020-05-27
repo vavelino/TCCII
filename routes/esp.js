@@ -2,7 +2,7 @@ const express = require("express")
 const routeresp = express.Router()
 const Pilha = require("../models/pilha")
 const usudb = require("../models/Usuaridb")
-const Filas=require("../models/filas")
+//const Filas = require("../models/filas")
 
 
 // Variavéis
@@ -13,10 +13,11 @@ var pilhaPedido = Pilha.pilha;
 var pilhaEnvio = Pilha.pilha2;
 var pilhaPedidoExterno = Pilha.pilha3; // Adiciona e excrui usuários
 var pilhaincoerrencia = Pilha.pilha4; // Pilha de análise de incoerrência
-var 
+
 var semaforoincoerrencia = false;// Indica quando as incoerencias estão rodando
 
 var ae = 0;
+const fila = [];
 routeresp.get("/servertoesp/:id", (req, res) => {
   /*// Pilha.pilha.Push("r\n908a75a3\n1")
   //res.send("P\n"+"c"+"\n2");
@@ -47,13 +48,11 @@ routeresp.get("/servertoesp/:id", (req, res) => {
 
 
 
-
-
   if (req.params.id == 'ESP_1') {
     if (pilhaPedidoExterno.GetCount() == 0) {
-      if (pilhaincoerrencia.GetCount() == 0) {
+      if (fila.length == 0) {
         if (tempo > 1000000) {
-          temp = -1;
+          tempo = -1;
         }
         tempo++
         console.log("GET ID:" + req.params.id)
@@ -63,7 +62,7 @@ routeresp.get("/servertoesp/:id", (req, res) => {
           res.send(pilhaPedido.Pop())
         }
       } else { // Caso haja pedido de incoerência
-        res.send(pilhaincoerrencia.Pop()) // Segunda prioridade
+        res.send(fila.pop()) // Segunda prioridade
       }
     } else {
       res.send(pilhaPedidoExterno.Pop()) // Pedido externo tem prioridade maior
@@ -83,7 +82,7 @@ routeresp.post("/esptoserver", (req, res) => {
 var Pedidos = setInterval(function () {
   if (semaforoincoerrencia == false) {
     if (tempointerno != tempo) {
-      // pilhaPedido.Push("L"); // v 
+      pilhaPedido.Push("L"); // v 
       tempointerno = tempo;
     }
   }
@@ -229,34 +228,121 @@ routeresp.get("/log/delete", (req, res) => {
   })
 })
 //DE TEMPOS EM TEMPOS VERFICAR OS USUÁRIOS CADASTRADOS NO ESP
+var vez = 0;
+var n_banco = 0;// quantidade no banco
 
-var verificaIncoerencia = setInterval(function () {
-  if (semaforoincoerrencia == false) {
-    semaforoincoerrencia = true;
-    // tempoIncoerencia = tempo;
-    pilhaincoerrencia.Push("T\n200")  // Altera Tempo de requisições get do esp para 200 ms
-    agora(); // Envio da hora do servidor para o esp
-    pilhaincoerrencia.Push("B\na\n2") // Excrui os arquivos dentro da pasta 2
-    var sql = " select * from usuario"
-    usudb.connection.query(sql, function (err, posts, field) {
-      for (a = 0; a < posts.length; a++) {
-        // console.log(posts[a]);
-        pilhaincoerrencia.Push("a\n" + posts[a].nome + "$" + posts[a].tag + "\n2") // Grava tudo na pasta 2 a de backup
+var Incoerencia = setInterval(function () {
+  semaforoincoerrencia = true;
+  switch (vez) {
+    case 0:
+      for (a = 0; a < fila.length; a++) { // limpando a fila
+        fila.pop()
       }
-      pilhaincoerrencia.Push("p\na\n2") // Troca a pasta da leitura do esp para a pasta 2
-      pilhaincoerrencia.Push("B\na\n1") // Excrui os arquivos dentro da pasta 1
-      for (a = 0; a < posts.length; a++) {
-        console.log("a\n" + posts[a].nome + "$" + posts[a].numero + "\n1");
-
-        pilhaincoerrencia.Push("a\n" + posts[a].nome + "$" + posts[a].tag + "\n1") // Grava tudo na pasta 1
+      vez = 1;
+      break;
+    case 1:
+      if (tempoIncoerencia != tempo) {
+        tempoIncoerencia = tempo;
+        fila.unshift("T\n1000")// Altera Tempo de requisições get do esp para 200 ms
+        vez = 2;
       }
-      pilhaincoerrencia.Push("p\na\n1") // Troca a pasta da leitura do esp para a pasta 1
-      pilhaincoerrencia.Push("B\na\n2") // Excrui os arquivos dentro da pasta 2
-      pilhaincoerrencia.Push("G\na")  // Altera Tempo de requisições get do esp para o padrão
-    })
-    semaforoincoerrencia = false;
+      break;
+    case 2:
+      if (tempoIncoerencia != tempo) {
+        vez = 3;
+        fila.unshift("B\na\n2") // Excrui todos arquivos dentro da pasta 2
+        tempoIncoerencia = tempo;
+        n_banco = 0
+      }
+      break;
+    case 3:
+      if (tempoIncoerencia != tempo) {
+        tempoIncoerencia = tempo;
+        sql = "select * from usuario";
+        usudb.connection.query(sql, function (err, posts, field) {
+          if (n_banco < posts.length) {
+            a = n_banco;
+            fila.unshift("a\n" + posts[a].nome + "$" + posts[a].numero + "\n2") // Grava tudo na pasta 2 a de backup
+            n_banco++;
+          } else {
+            vez++;
+            tempoIncoerencia = tempo;
+          }
+        })
+      }
+      break;
+    case 4:
+      if (tempoIncoerencia != tempo) {
+        tempoIncoerencia = tempo;
+        fila.unshift("p\na\n2") // Troca a pasta da leitura do esp para a pasta 2
+        vez++;
+      }
+      break;
+    case 5:
+      if (tempoIncoerencia != tempo) {
+        tempoIncoerencia = tempo;
+        fila.unshift("p\na\n2") // Troca a pasta da leitura do esp para a pasta 2
+        vez++;
+      }
+      break;
+    case 6:
+      if (tempoIncoerencia != tempo) {
+        tempoIncoerencia = tempo;
+        fila.unshift("B\na\n1") // Excrui os arquivos dentro da pasta 1
+        vez++;
+        n_banco = 0
+      }
+      break;
+    case 7:
+      if (tempoIncoerencia != tempo) {
+        tempoIncoerencia = tempo;
+        sql = "select * from usuario";
+        usudb.connection.query(sql, function (err, posts, field) {
+          if (n_banco < posts.length) {
+            a = n_banco;
+            fila.unshift("a\n" + posts[a].nome + "$" + posts[a].numero + "\n1") // Grava tudo na pasta 2 a de backup
+            n_banco++;
+          } else {
+            vez++;
+            tempoIncoerencia = tempo;
+          }
+        })
+      }
+      break;
+    case 8:
+      if (tempoIncoerencia != tempo) {
+        tempoIncoerencia = tempo;
+        fila.unshift("p\na\n1") // Troca a pasta da leitura do esp para a pasta 1
+        vez++;
+      }
+      break;
+    case 9:
+      if (tempoIncoerencia != tempo) {
+        tempoIncoerencia = tempo;
+        fila.unshift("B\na\n2") // Excrui os arquivos dentro da pasta 2
+        vez++;
+      }
+      break;
+    case 10:
+      if (tempoIncoerencia != tempo) {
+        tempoIncoerencia = tempo;
+        fila.unshift("G\na")  // Altera Tempo de requisições get do esp para o padrão
+        vez = 11;
+      }
+      break;
+    case 11:
+      agora();
+      vez++;
+      break;
+    case 12:
+      vez++;
+      break;
+    default:
+      console.log(vez)
+      break;
   }
-}, 50000);
+  semaforoincoerrencia = false;
+}, 1000);
 
 
 
