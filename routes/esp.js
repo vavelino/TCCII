@@ -5,24 +5,38 @@ const usudb = require("../models/Usuaridb")
 
 
 // Variavéis
-var tempo = 0; // Variável para controle de pedidos internos
-var tempoIncoerencia=0;// Variável para controle de incoerrências
+var tempo = 0;
+var tempoIncoerencia = 0;// Variável para controle de incoerrências
+var tempointerno = 0; // Variável para controle de pedidos internos
 var pilhaPedido = Pilha.pilha;
 var pilhaEnvio = Pilha.pilha2;
 var pilhaPedidoExterno = Pilha.pilha3; // Adiciona e excrui usuários
 var pilhaincoerrencia = Pilha.pilha4; // Pilha de análise de incoerrência
+var semaforoincoerrencia = false;// Indica quando as incoerencias estão rodando
 
 
 routeresp.get("/servertoesp/:id", (req, res) => {
   // Pilha.pilha.Push("r\n908a75a3\n1")
+  esp.adicionarnaPilha("a\n" + req.body.nome+"$"+req.body.tag+"\n1")
+
+
+
+
   if (req.params.id == 'ESP_1') {
     if (pilhaPedidoExterno.GetCount() == 0) {
-      tempo++
-      // console.log("GET ID:" + req.params.id)
-      if (pilhaPedido.GetCount() == 0) {
-        res.send("N")
-      } else {
-        res.send(pilhaPedido.Pop())
+      if (pilhaincoerrencia.GetCount() == 0) {
+        if (tempo > 1000000) {
+          temp = -1;
+        }
+        tempo++
+        console.log("GET ID:" + req.params.id)
+        if (pilhaPedido.GetCount() == 0) {
+          res.send("N")
+        } else {
+          res.send(pilhaPedido.Pop())
+        }
+      } else { // Caso haja pedido de incoerência
+        res.send(pilhaincoerrencia.Pop())
       }
     } else {
       res.send(pilhaPedidoExterno.Pop()) // Pedido externo tem prioridade maior
@@ -38,13 +52,13 @@ routeresp.post("/esptoserver", (req, res) => {
   pilhaEnvio.Push(req.body.a);
   res.sendStatus(200) //OK  
 })
-// Responsável por controlar os pedidos
-var umavez;
+// Responsável por controlar os pedidos de LOG
 var Pedidos = setInterval(function () {
-  if (umavez != tempo) {
-    tempo = 0
-    pilhaPedido.Push("L"); // v 
-    umavez = tempo;
+  if (semaforoincoerrencia == false) {
+    if (tempointerno != tempo) {
+     // pilhaPedido.Push("L"); // v 
+      tempointerno = tempo;
+    }
   }
 }, 1000);
 
@@ -188,9 +202,10 @@ routeresp.get("/log/delete", (req, res) => {
   })
 })
 //DE TEMPOS EM TEMPOS VERFICAR OS USUÁRIOS CADASTRADOS NO ESP
-
+/*
 var verificaIncoerencia = setInterval(function () {
-  tempoIncoerencia=tempo;
+  semaforoincoerrencia = true;
+  // tempoIncoerencia = tempo;
   pilhaincoerrencia.Push("T\n200")  // Altera Tempo de requisições get do esp para 200 ms
   agora(); // Envio da hora do servidor para o esp
   var sql = " select * from usuario"
@@ -202,15 +217,16 @@ var verificaIncoerencia = setInterval(function () {
     pilhaincoerrencia.Push("p\na\n2") // Troca a pasta da leitura do esp para a pasta 2
     pilhaincoerrencia.Push("B\na\n1") // Excrui os arquivos dentro da pasta 1
     for (a = 0; a < posts.length; a++) {
-      // console.log(posts[a]);
+      console.log("a\n" + posts[a].nome + "$" + posts[a].numero + "\n1");
+
       pilhaincoerrencia.Push("a\n" + posts[a].nome + "$" + posts[a].tag + "\n1") // Grava tudo na pasta 1
     }
     pilhaincoerrencia.Push("p\na\n1") // Troca a pasta da leitura do esp para a pasta 1
     pilhaincoerrencia.Push("B\na\n2") // Excrui os arquivos dentro da pasta 2
     pilhaincoerrencia.Push("G\na")  // Altera Tempo de requisições get do esp para o padrão
   })
-
-}, 10000);
+  semaforoincoerrencia = false;
+}, 50000);*/
 
 
 
