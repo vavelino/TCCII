@@ -27,23 +27,18 @@ routeresp.get("/servertoesp/:id", (req, res) => {
     }
   } else {
     console.log("Desconhecido")
-  }  
+  }
 })
 
 
 routeresp.post("/esptoserver", (req, res) => {
-  console.log(req.body.a)
+  // console.log(req.body.a)
   pilhaEnvio.Push(req.body.a);
-  //res.send(200) //ok
-  res.sendStatus(200) //OK
-  // console.log(req.body.b)
-  // console.log(req.body.c)
-  // console.log(req.body.d)
-  //  console.log(req.body.e)   
+  res.sendStatus(200) //OK  
 })
 // Responsável por controlar os pedidos
 var umavez;
-var myInt = setInterval(function () {
+var Pedidos = setInterval(function () {
   if (umavez != tempo) {
     tempo = 0
     pilhaPedido.Push("L"); // v 
@@ -52,7 +47,7 @@ var myInt = setInterval(function () {
 }, 1000);
 
 //Tratamento dos dados recebidos
-var myInt2 = setInterval(function () {
+var tratamentoDados = setInterval(function () {
 
   var mensgrecebida
   var log = ""
@@ -95,7 +90,7 @@ var myInt2 = setInterval(function () {
               }
             }
           }
-          console.log('/log= ' + log + '/ID= ' + ID + '/aute= ' + autentificação + '/data= ' + data)
+          // console.log('/log= ' + log + '/ID= ' + ID + '/aute= ' + autentificação + '/data= ' + data)
           if (autentificação == 'N') {
             autentificação = 'Não autorizado'
           }
@@ -119,7 +114,7 @@ var myInt2 = setInterval(function () {
           })
         } else {
           console.log("Sem LOG")
-          agora();
+          //agora();
         }
         break;
       case 'E':
@@ -134,8 +129,8 @@ var myInt2 = setInterval(function () {
 }, 1000);
 
 function agora() {
-  var ag=Math.floor(Date.now() / 1000)-3*3600 // Brasil -3   
-  var envio = "t\nt\n"+ag;
+  var ag = Math.floor(Date.now() / 1000) - 3 * 3600 // Brasil -3   
+  var envio = "t\nt\n" + ag;
   pilhaPedido.Push(envio);
 }
 // Função para adicionar zero nos minutos e segundos
@@ -168,7 +163,7 @@ routeresp.get("/log", (req, res) => {
       //console.log(posts[a].tempo)
       //var dataInput = posts[a].tempo
       data = new Date(posts[a].tempo * 1000);
-      console.log(data)
+      //console.log(data)
 
       var dataFormatada = ("0" + data.getDate()).substr(-2) + "/"
         + ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear() + " " + addZero(data.getHours()) + ":" + addZero(data.getMinutes()) + ":" + addZero(data.getSeconds());
@@ -182,10 +177,42 @@ routeresp.get("/log", (req, res) => {
     res.render('log/logesp', { posts: posts })
     //res.render('log/logesp', { posts: posts })
   })
-
 })
+routeresp.get("/log/delete", (req, res) => {
+  usudb.connection.query("DELETE FROM log", function (err, posts, field) {
+    usudb.connection.query("ALTER TABLE log AUTO_INCREMENT = 0", function (err, posts, field) {
+      res.redirect("/esp/log");
+    })
+  })
+})
+// fUNÇÃO PARA DE TEMPOS EM TEMPOS VERFICAR USUÁRIOS CADASTRADOS NO ESP
+
+var verificaIncoerencia = setInterval(function () {
+  if (umavez != tempo) {
+    tempo = 0
+    pilhaPedido.Push("L"); // v 
+    umavez = tempo;
+  }
+}, 1000);
+
+
+
 // Exports
 module.exports = routeresp
 module.exports.adicionarnaPilha = (informação) => {
   pilhaPedidoExterno.Push(informação);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

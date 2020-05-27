@@ -116,7 +116,7 @@ router.post("/usuario/novo", (req, res) => {
         var c = "','"
         var d = req.body.tag;
         var e = "',CURRENT_TIMESTAMP)"
-        esp.adicionarnaPilha("a\n" + req.body.tag + "\n1")
+        esp.adicionarnaPilha("a\n" + req.body.nome+"$"+req.body.tag+"\n1")
         var sql = a + b + c + d + e;
         usudb.connection.query(sql, function (err, result) {
             if (err) {
