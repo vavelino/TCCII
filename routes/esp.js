@@ -128,6 +128,7 @@ var tratamentoDados = setInterval(function () {
                   break;
                 case 5:
                   data += mensgrecebida[a];
+                  console.log(data)
                   break;
               }
             }
@@ -182,6 +183,7 @@ function addZero(i) {
   }
   return i;
 }
+//ROTAS:
 // ROTA LOG
 routeresp.get("/log", (req, res) => {
   sql = " select	u.nome as nome,    l.id as id,    l.numero as numero,    l.aute as aute,    l.tempo as tempo,    l.dt as dt     from usuario u    right OUTER JOIN  log l	on u.numero = l.numero ORDER BY id ASC"
@@ -208,7 +210,7 @@ routeresp.get("/log", (req, res) => {
       //console.log(data)
 
       var dataFormatada = ("0" + data.getDate()).substr(-2) + "/"
-        + ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear() + " " + addZero(data.getHours()) + ":" + addZero(data.getMinutes()) + ":" + addZero(data.getSeconds());
+        + ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear() + " " + addZero(data.getHours() + 3) + ":" + addZero(data.getMinutes()) + ":" + addZero(data.getSeconds());
       posts[a].tempo = dataFormatada;
 
     }
@@ -220,6 +222,7 @@ routeresp.get("/log", (req, res) => {
     //res.render('log/logesp', { posts: posts })
   })
 })
+// ROTA delete
 routeresp.get("/log/delete", (req, res) => {
   usudb.connection.query("DELETE FROM log", function (err, posts, field) {
     usudb.connection.query("ALTER TABLE log AUTO_INCREMENT = 0", function (err, posts, field) {
@@ -227,6 +230,10 @@ routeresp.get("/log/delete", (req, res) => {
     })
   })
 })
+
+
+
+
 //DE TEMPOS EM TEMPOS VERFICAR OS USUÁRIOS CADASTRADOS NO ESP
 var vez = 0;
 var n_banco = 0;// quantidade no banco
@@ -337,8 +344,11 @@ var Incoerencia = setInterval(function () {
     case 12:
       vez++;
       break;
+    case 60:
+      vez = 0;
+      break;
     default:
-      console.log(vez)
+      vez++;
       break;
   }
   semaforoincoerrencia = false;
