@@ -14,7 +14,7 @@ var pilhaEnvio = Pilha.pilha2;
 var pilhaPedidoExterno = Pilha.pilha3; // Adiciona e excrui usuários
 var pilhaincoerrencia = Pilha.pilha4; // Pilha de análise de incoerrência
 
-var semaforoincoerrencia = false;// Indica quando as incoerencias estão rodando
+let semaforoincoerrencia = false;// Indica quando as incoerencias estão rodando
 
 var ae = 0;
 const fila = [];
@@ -74,20 +74,20 @@ routeresp.get("/servertoesp/:id", (req, res) => {
 
 
 routeresp.post("/esptoserver", (req, res) => {
-  // console.log(req.body.a)
   pilhaEnvio.Push(req.body.a);
   res.sendStatus(200) //OK  
 })
 // Responsável por controlar os pedidos de LOG
+/*
 var Pedidos = setInterval(function () {
   if (semaforoincoerrencia == false) {
     if (tempointerno != tempo) {
-      pilhaPedido.Push("L"); // v 
-      tempointerno = tempo;
+    //  pilhaPedido.Push("L"); // v 
+     // tempointerno = tempo;
     }
   }
 }, 1000);
-
+*/
 //Tratamento dos dados recebidos
 var tratamentoDados = setInterval(function () {
 
@@ -109,6 +109,7 @@ var tratamentoDados = setInterval(function () {
         agora();
         break;
       case 'L'://    L/LOG/0.TXTa9ff582c$N$10
+        console.log(mensgrecebida);
         if (mensgrecebida[1] != '$') {
           for (var a = 6; a < mensgrecebida.length; a++) {
             var b = (mensgrecebida[a] == '.') || (mensgrecebida[a] == 'T') || (mensgrecebida[a] == '$')
@@ -128,7 +129,6 @@ var tratamentoDados = setInterval(function () {
                   break;
                 case 5:
                   data += mensgrecebida[a];
-                  console.log(data)
                   break;
               }
             }
@@ -140,24 +140,36 @@ var tratamentoDados = setInterval(function () {
           if (autentificação == 'A') {
             autentificação = 'Autorizado'
           }
-          var a = "insert into log(numero,aute,tempo,dt)values('"
-          var b = ID;
-          var c = "','"
-          var d = autentificação
-          var e = "','"
-          var f = data;
-          var g = "',CURRENT_TIMESTAMP)"
-          var sql = a + b + c + d + e + f + g;
-          usudb.connection.query(sql, function (err, result) {
-            if (err) {
-              console.log("Erro ao gravar LOG")
+          sql = "SELECT * FROM log where tempo =" + data
+          usudb.connection.query(sql, function (err, posts, field) {  // verificar se esse log já foi gravado            
+            if (posts.length == 0) {
+              var a = "insert into log(numero,aute,tempo,dt)values('"
+              var b = ID;
+              var c = "','"
+              var d = autentificação
+              var e = "','"
+              var f = data;
+              var g = "',CURRENT_TIMESTAMP)"
+              var sql = a + b + c + d + e + f + g;
+              usudb.connection.query(sql, function (err, result) {
+                if (err) {
+                  console.log("Erro ao gravar LOG")
+                } else {
+                  console.log("LOG gravado com sucesso")
+                  if (semaforoincoerrencia == false) {
+                    //pilhaPedido.Push("T\n200");
+                  }
+                }
+              })
             } else {
-              console.log("LOG gravado com sucesso")
+              console.log("Esse LOG já está gravado")
             }
           })
         } else {
           console.log("Sem LOG")
-          //agora();
+          if (semaforoincoerrencia == false) {
+            // pilhaPedido.Push("T\n5000");
+          }
         }
         break;
       case 'E':
@@ -235,7 +247,7 @@ routeresp.get("/log/delete", (req, res) => {
 
 
 //DE TEMPOS EM TEMPOS VERFICAR OS USUÁRIOS CADASTRADOS NO ESP
-var vez = 0;
+var vez = 12;
 var n_banco = 0;// quantidade no banco
 
 var Incoerencia = setInterval(function () {
@@ -250,7 +262,7 @@ var Incoerencia = setInterval(function () {
     case 1:
       if (tempoIncoerencia != tempo) {
         tempoIncoerencia = tempo;
-        fila.unshift("T\n1000")// Altera Tempo de requisições get do esp para 200 ms
+        fila.unshift("T\n200")// Altera Tempo de requisições get do esp para 200 ms
         vez = 2;
       }
       break;
@@ -341,16 +353,19 @@ var Incoerencia = setInterval(function () {
       agora();
       vez++;
       break;
-    case 12:
-      vez++;
-      break;
-    case 60:
+    case 100: // 20 em 20 segundos
+      console.log("Akiii")
       vez = 0;
       break;
     default:
-      vez++;
+      if (tempointerno != tempo) {
+        pilhaPedido.Push("L"); // v 
+        tempointerno = tempo;
+        vez++;
+      }
       break;
   }
+  console.log(vez)
   semaforoincoerrencia = false;
 }, 1000);
 

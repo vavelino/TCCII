@@ -12,7 +12,7 @@ class Pilha {
         }
         return null;
     }
-    Push = function (data) {
+    Push(data) {
         let node = {
             data: data,
             next: null
@@ -21,7 +21,7 @@ class Pilha {
         this._top = node;
         this._count++;
     }
-    Pop = function () {
+    Pop() {
         if (this._top) {
             let out = this._top;
             this._top = this._top.next;
@@ -31,8 +31,8 @@ class Pilha {
             return out.data;
         }
         return null;
-    }   
-    DisplayAll = function () {
+    }
+    DisplayAll() {
         if (this._top) {
             let arr = new Array();
             let current = this._top;

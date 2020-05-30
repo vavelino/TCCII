@@ -18,7 +18,6 @@ const {aute}=require("./helpers/eAdmin")
 //const ciclo= require("./models/ciclo")
 
 
-
 // Configurações
 //Sessão
 //app.use()  //Tudo que tem o use() é um middle
