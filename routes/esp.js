@@ -221,7 +221,7 @@ routeresp.get("/log", (req, res) => {
       // Horário servidor
       var dataInput = posts[a].dt
       data = new Date(dataInput);
-      var dataFormatada ="Servidor -> Hora: "+addZero(data.getHours()) + ":" + addZero(data.getMinutes()) + ":" + addZero(data.getSeconds())+" Data: "+("0" + data.getDate()).substr(-2) + "/"+ ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear() ;
+      var dataFormatada ="Hora: "+addZero(data.getHours()) + ":" + addZero(data.getMinutes()) + ":" + addZero(data.getSeconds())+" | Data: "+("0" + data.getDate()).substr(-2) + "/"+ ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear() ;
       posts[a].dt = dataFormatada;
       // Horário Esp
       //console.log(posts[a].tempo)
@@ -230,7 +230,7 @@ routeresp.get("/log", (req, res) => {
       //data = new Date((posts[a].tempo )* 1000);   
       var dataInput = posts[a].tempo;
       data = new Date((dataInput)*1000);
-      var dataFormatada ="Esp -> Hora: "+addZero(data.getUTCHours()) + ":" + addZero(data.getUTCMinutes()) + ":" + addZero(data.getUTCSeconds())+" Data: "+("0" + data.getDate()).substr(-2) + "/"+ ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear() ;
+      var dataFormatada ="Hora: "+addZero(data.getUTCHours()) + ":" + addZero(data.getUTCMinutes()) + ":" + addZero(data.getUTCSeconds())+" | Data: "+("0" + data.getDate()).substr(-2) + "/"+ ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear() ;
       posts[a].tempo = dataFormatada;
     }
     //posts.nome
