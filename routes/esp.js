@@ -20,35 +20,6 @@ let controleLog = true;// Serve para que o sistema só peça o log quando o ante
 var ae = 0;
 const fila = [];
 routeresp.get("/servertoesp/:id", (req, res) => {
-  /*// Pilha.pilha.Push("r\n908a75a3\n1")
-  //res.send("P\n"+"c"+"\n2");
-  //res.send("B\n"+"c"+"\n2");
-  res.send("N")
-  ae=2;
-  switch (ae) {
-    case 0:
-      res.send("a\n"+"branco$a9ff582c"+"\n1");
-      
-      ae++
-      break;
-    case 1:
-      res.send("a\n" + "Azul$908a75a3" + "\n2")
-      ae++
-      break;
-    case 2:
-      //res.send("N")
-      //ae=2;
-      break;
-      default:
-         
-        break;
-      
-  }*/
-
-
-
-
-
   if (req.params.id == 'ESP_1') {
     if (pilhaPedidoExterno.GetCount() == 0) {
       if (fila.length == 0) {
@@ -140,7 +111,7 @@ var tratamentoDados = setInterval(function () {
           }
           if (autentificação == 'A') {
             autentificação = 'Autorizado'
-          }                    
+          }
           sql = "SELECT * FROM log where tempo =" + data
           usudb.connection.query(sql, function (err, posts, field) {  // verificar se esse log já foi gravado            
             if (posts.length == 0) {
@@ -205,42 +176,88 @@ function addZero(i) {
   return i;
 }
 //ROTAS:
+
+/*
+router.get("/usuario/edit/:id", (req, res) => {
+    var sql = "select * from usuario where id = " + req.params.id;
+    usudb.connection.query(sql, function (err, dados, field) {
+        if ((err) || (dados.length <= 0)) {
+            //throw err;
+            req.flash("error_msg", "Esse usuário não existe");
+            res.redirect("/admin/usuario");
+        } else {
+            res.render('admin/editusuario', { dados: dados })
+        }
+    })
+})
+*/
 // ROTA LOG
-routeresp.get("/log", (req, res) => {
-  sql = " select	u.nome as nome,    l.id as id,    l.numero as numero,    l.aute as aute,    l.tempo as tempo,    l.dt as dt     from usuario u    right OUTER JOIN  log l	on u.numero = l.numero ORDER BY id ASC"
-
-  //usudb.connection.query("select * from log", function (err, posts, field) {
-
+// ROTA LOG versão antiga
+// Versão nova
+var organizado = '0'; // Guarda o valor anterior
+routeresp.get("/log/:ordem/:pagina", (req, res) => {
+  let controleOrdem;
+  if (req.params.ordem == '5') {
+    controleOrdem = organizado;
+  } else {
+    controleOrdem = req.params.ordem
+  }
+  switch (controleOrdem) {
+    case '0':
+      organizado = '0';
+      sql = " select	u.nome as nome,    l.id as id,    l.numero as numero,    l.aute as aute,    l.tempo as tempo,    l.dt as dt     from usuario u    right OUTER JOIN  log l	on u.numero = l.numero ORDER BY nome ASC"
+      break;
+    case '1':
+      organizado = '1';
+      sql = " select	u.nome as nome,    l.id as id,    l.numero as numero,    l.aute as aute,    l.tempo as tempo,    l.dt as dt     from usuario u    right OUTER JOIN  log l	on u.numero = l.numero ORDER BY aute ASC"
+      break;
+    case '2':
+      organizado = '2';
+      sql = " select	u.nome as nome,    l.id as id,    l.numero as numero,    l.aute as aute,    l.tempo as tempo,    l.dt as dt     from usuario u    right OUTER JOIN  log l	on u.numero = l.numero ORDER BY dt ASC"
+      break;
+    case '3':
+      organizado = '3';
+      sql = " select	u.nome as nome,    l.id as id,    l.numero as numero,    l.aute as aute,    l.tempo as tempo,    l.dt as dt     from usuario u    right OUTER JOIN  log l	on u.numero = l.numero ORDER BY tempo ASC"
+      break;
+    case '4':
+      organizado = '4';
+      sql = " select	u.nome as nome,    l.id as id,    l.numero as numero,    l.aute as aute,    l.tempo as tempo,    l.dt as dt     from usuario u    right OUTER JOIN  log l	on u.numero = l.numero ORDER BY id ASC"
+      break;
+    default:
+      organizado = '4';
+      sql = " select	u.nome as nome,    l.id as id,    l.numero as numero,    l.aute as aute,    l.tempo as tempo,    l.dt as dt     from usuario u    right OUTER JOIN  log l	on u.numero = l.numero ORDER BY id ASC"
+      break;
+  }
   usudb.connection.query(sql, function (err, posts, field) {
-    //console.log(posts.length)
+    if (err) throw err;
     for (a = 0; a < posts.length; a++) {
       if (posts[a].nome == null) {
         posts[a].nome = 'Desconhecido'
-        //console.log(posts[a].dt)
       }
-      // Horário servidor
       var dataInput = posts[a].dt
       data = new Date(dataInput);
-      var dataFormatada ="Hora: "+addZero(data.getHours()) + ":" + addZero(data.getMinutes()) + ":" + addZero(data.getSeconds())+" | Data: "+("0" + data.getDate()).substr(-2) + "/"+ ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear() ;
+      var dataFormatada = "Hora: " + addZero(data.getHours()) + ":" + addZero(data.getMinutes()) + ":" + addZero(data.getSeconds()) + " | Data: " + ("0" + data.getDate()).substr(-2) + "/" + ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear();
       posts[a].dt = dataFormatada;
-      // Horário Esp
-      //console.log(posts[a].tempo)
-      //var dataInput = posts[a].tempo
-      //posts[a].tempo=posts[a].tempo+0.000001
-      //data = new Date((posts[a].tempo )* 1000);   
       var dataInput = posts[a].tempo;
-      data = new Date((dataInput)*1000);
-      var dataFormatada ="Hora: "+addZero(data.getUTCHours()) + ":" + addZero(data.getUTCMinutes()) + ":" + addZero(data.getUTCSeconds())+" | Data: "+("0" + data.getDate()).substr(-2) + "/"+ ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear() ;
+      data = new Date((dataInput) * 1000);
+      var dataFormatada = "Hora: " + addZero(data.getUTCHours()) + ":" + addZero(data.getUTCMinutes()) + ":" + addZero(data.getUTCSeconds()) + " | Data: " + ("0" + data.getDate()).substr(-2) + "/" + ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear();
       posts[a].tempo = dataFormatada;
     }
-    //posts.nome
-
-    // console.log(posts)
     if (err) throw err;
-    res.render('log/logesp', { posts: posts })
-    //res.render('log/logesp', { posts: posts })
+    if (req.params.pagina == '0') {
+      res.render('log/logesp', { posts: posts })
+    } else {
+      res.send("Espera");
+    }
   })
 })
+
+
+
+
+
+
+
 // ROTA delete
 routeresp.get("/log/delete", (req, res) => {
   usudb.connection.query("DELETE FROM log", function (err, posts, field) {
@@ -251,7 +268,7 @@ routeresp.get("/log/delete", (req, res) => {
 })
 var vez = 12// = 0;
 routeresp.get("/inco", (req, res) => { // Giro de incoerrências
-  vez=0;
+  vez = 0;
   res.redirect("/");
 })
 //DE TEMPOS EM TEMPOS VERFICAR OS USUÁRIOS CADASTRADOS NO ESP
@@ -379,7 +396,7 @@ var Incoerencia = setInterval(function () {
       }
       break;
   }
-  console.log(vez)
+  // console.log(vez)
   semaforoincoerrencia = false;
 }, 1000);
 

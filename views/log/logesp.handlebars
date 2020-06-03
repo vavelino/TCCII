@@ -1,19 +1,22 @@
+<meta http-equiv='refresh' content='10;url=/esp/log/5/0'>
 <h2>Log ESP:</h2> 
 <br>
-<a href="/esp/log"><button type="button" class="btn btn-success mt-2">Atualizar página</button> </a>
-
+<a href="/esp/log/5/0"><button type="button" class="btn btn-success mt-2">Atualizar página</button> </a>
 <div class="btn-group dropright">
   <button class="btn btn-primary dropdown-toggle mt-2" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     Organizar por...
-  </button>
+  </button>  
   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-    <a class="dropdown-item" href="#">Nome</a>
-    <a class="dropdown-item" href="#">Acesso</a>
-    <a class="dropdown-item" href="#">Hora servidor</a>
-    <a class="dropdown-item" href="#">Hora ESP</a>
-     <a class="dropdown-item" href="#">N° Banco</a>
+    <a class="dropdown-item" href="/esp/log/0/0">Nome</a>
+    <a class="dropdown-item" href="/esp/log/1/0">Acesso</a>
+    <a class="dropdown-item" href="/esp/log/2/0">Hora servidor</a>
+    <a class="dropdown-item" href="/esp/log/3/0">Hora ESP</a>
+    <a class="dropdown-item" href="/esp/log/4/0">N° Banco</a>
   </div>
-</div>       
+</div> 
+<!--Log Antigo-->
+<a href="/esp/log/4/1"><button type="button" class="btn btn-info mt-2">Modo Blocos</button> </a>     
+<hr> 
 <table class="table table-bordered table-striped mt-2">
     <tr>
         <th class="text-center">
@@ -50,4 +53,5 @@
         {{/each}}
     </tbody>
 </table>
+<hr>
 <a href="/esp/log/delete"><button class="btn btn-danger mt-2">Deletar todos os logs</button></a>
