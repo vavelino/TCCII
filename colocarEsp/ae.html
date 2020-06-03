@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<htm lang="pt-br">
+<head>
+    <meta charset="UTF-8" name=\"viewport\" content=\"width=device-width, initial-scale=1\">
+    <link rel=\"icon\" href=\"data:,\">
+    <style>
+        html {
+            background-color: #7F8688;
+            font-family: Helvetica;
+            display: inline-block;
+            margin: 0px auto;
+            text-align: center;
+        }
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 16px 40px;
+            text-decoration: none;
+            font-size: 30px;
+            margin: 2px;
+            cursor: pointer;
+        }
+        .button2 {
+            background-color: #008cba;
+            border: none;
+            color: white;
+            padding: 16px 40px;
+            text-decoration: none;
+            font-size: 30px;
+            margin: 2px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Controle de acesso ESP_01</h1>
+    <h3>Redifinição de parâmetros de rede:</h3>
+    <form action="/get" class="action">
+        <input type="text" id="WIFISSID" name="input1" placeholder="WIFISSID" class="form-control" required><br><br>
+        <input type="text" id="PASSWORD" name="input2" placeholder="PASSWORD" class="form-control" required><br><br>
+        <input type="text" id="SERVER_IP" name="input3" placeholder="SERVER_IP" class="form-control"
+            required><br><br>
+            <input type="submit" class="button" value="Modificar"><br>       
+    </form>
+    <p><a href="#"><button class="button2">Reiniciar</button></a></p>
+</body>
+</html>

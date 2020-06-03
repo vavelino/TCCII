@@ -15,7 +15,7 @@ var pilhaPedidoExterno = Pilha.pilha3; // Adiciona e excrui usuários
 var pilhaincoerrencia = Pilha.pilha4; // Pilha de análise de incoerrência
 
 let semaforoincoerrencia = false;// Indica quando as incoerencias estão rodando
-
+let controleLog = true;// Serve para que o sistema só peça o log quando o anterior for excruido
 var ae = 0;
 const fila = [];
 routeresp.get("/servertoesp/:id", (req, res) => {
@@ -166,9 +166,17 @@ var tratamentoDados = setInterval(function () {
             }
           })
         } else {
-          console.log("Sem LOG")
-          if (semaforoincoerrencia == false) {
-            // pilhaPedido.Push("T\n5000");
+          if (mensgrecebida[2] == 'N') {
+            console.log("Sem LOG")
+            controleLog = true;
+          }
+          if (mensgrecebida[2] == 'E') { // Algum log foi excruido
+            var idLogExcruido;
+            for (var a = 3; a < mensgrecebida.length; a++) {
+              idLogExcruido = mensgrecebida[a]
+            }
+            console.log("Excruido Log: " + idLogExcruido)
+            controleLog = true;
           }
         }
         break;
@@ -351,15 +359,20 @@ var Incoerencia = setInterval(function () {
       break;
     case 11:
       agora();
+      controleLog = true;
       vez++;
       break;
     case 100: // 20 em 20 segundos
-      console.log("Akiii")
+      console.log("Inicio da rotina de análise de incoerrências")
       vez = 0;
       break;
     default:
       if (tempointerno != tempo) {
-        pilhaPedido.Push("L"); // v 
+        // pilhaPedido.Push("L"); // v
+        if (controleLog) {
+          controleLog = false;
+          fila.unshift("L")
+        }
         tempointerno = tempo;
         vez++;
       }
