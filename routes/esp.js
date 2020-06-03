@@ -2,6 +2,7 @@ const express = require("express")
 const routeresp = express.Router()
 const Pilha = require("../models/pilha")
 const usudb = require("../models/Usuaridb")
+var moment = require('moment')
 //const Filas = require("../models/filas")
 
 
@@ -139,7 +140,7 @@ var tratamentoDados = setInterval(function () {
           }
           if (autentificação == 'A') {
             autentificação = 'Autorizado'
-          }
+          }                    
           sql = "SELECT * FROM log where tempo =" + data
           usudb.connection.query(sql, function (err, posts, field) {  // verificar se esse log já foi gravado            
             if (posts.length == 0) {
@@ -220,19 +221,17 @@ routeresp.get("/log", (req, res) => {
       // Horário servidor
       var dataInput = posts[a].dt
       data = new Date(dataInput);
-      var dataFormatada = ("0" + data.getDate()).substr(-2) + "/"
-        + ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear() + " " + addZero(data.getHours()) + ":" + addZero(data.getMinutes()) + ":" + addZero(data.getSeconds());
+      var dataFormatada ="Servidor -> Hora: "+addZero(data.getHours()) + ":" + addZero(data.getMinutes()) + ":" + addZero(data.getSeconds())+" Data: "+("0" + data.getDate()).substr(-2) + "/"+ ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear() ;
       posts[a].dt = dataFormatada;
       // Horário Esp
       //console.log(posts[a].tempo)
       //var dataInput = posts[a].tempo
-      data = new Date(posts[a].tempo * 1000);
-      //console.log(data)
-
-      var dataFormatada = ("0" + data.getDate()).substr(-2) + "/"
-        + ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear() + " " + addZero(data.getHours() + 3) + ":" + addZero(data.getMinutes()) + ":" + addZero(data.getSeconds());
+      //posts[a].tempo=posts[a].tempo+0.000001
+      //data = new Date((posts[a].tempo )* 1000);   
+      var dataInput = posts[a].tempo;
+      data = new Date((dataInput)*1000);
+      var dataFormatada ="Esp -> Hora: "+addZero(data.getUTCHours()) + ":" + addZero(data.getUTCMinutes()) + ":" + addZero(data.getUTCSeconds())+" Data: "+("0" + data.getDate()).substr(-2) + "/"+ ("0" + (data.getMonth() + 1)).substr(-2) + "/" + data.getFullYear() ;
       posts[a].tempo = dataFormatada;
-
     }
     //posts.nome
 
@@ -250,12 +249,13 @@ routeresp.get("/log/delete", (req, res) => {
     })
   })
 })
-
-
-
-
+var vez = 12// = 0;
+routeresp.get("/inco", (req, res) => { // Giro de incoerrências
+  vez=0;
+  res.redirect("/");
+})
 //DE TEMPOS EM TEMPOS VERFICAR OS USUÁRIOS CADASTRADOS NO ESP
-var vez = 12;
+
 var n_banco = 0;// quantidade no banco
 
 var Incoerencia = setInterval(function () {
@@ -270,7 +270,7 @@ var Incoerencia = setInterval(function () {
     case 1:
       if (tempoIncoerencia != tempo) {
         tempoIncoerencia = tempo;
-        fila.unshift("T\n200")// Altera Tempo de requisições get do esp para 200 ms
+        fila.unshift("T\n600")// Altera Tempo de requisições get do esp para 200 ms
         vez = 2;
       }
       break;
@@ -371,7 +371,8 @@ var Incoerencia = setInterval(function () {
         // pilhaPedido.Push("L"); // v
         if (controleLog) {
           controleLog = false;
-          fila.unshift("L")
+          pilhaPedido.Push("L");
+          //fila.unshift("L")
         }
         tempointerno = tempo;
         vez++;
