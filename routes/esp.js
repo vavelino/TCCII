@@ -247,7 +247,7 @@ routeresp.get("/log/:ordem/:pagina", (req, res) => {
     if (req.params.pagina == '0') {
       res.render('log/logesp', { posts: posts })
     } else {
-      res.send("Espera");
+      res.render('log/logaesp', { posts: posts })
     }
   })
 })
