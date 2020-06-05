@@ -196,12 +196,9 @@ router.get("/usuario/edit/:id", (req, res) => {
 // Versão nova
 var organizado = '0'; // Guarda o valor anterior
 routeresp.get("/log/:ordem/:pagina", (req, res) => {
-  let controleOrdem;
-  if (req.params.ordem == '5') {
-    controleOrdem = organizado;
-  } else {
+  let controleOrdem; 
     controleOrdem = req.params.ordem
-  }
+  
   switch (controleOrdem) {
     case '0':
       organizado = '0';
@@ -262,7 +259,7 @@ routeresp.get("/log/:ordem/:pagina", (req, res) => {
 routeresp.get("/log/delete", (req, res) => {
   usudb.connection.query("DELETE FROM log", function (err, posts, field) {
     usudb.connection.query("ALTER TABLE log AUTO_INCREMENT = 0", function (err, posts, field) {
-      res.redirect("/esp/log");
+      res.redirect("/esp/log/4/0");
     })
   })
 })
