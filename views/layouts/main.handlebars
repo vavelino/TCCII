@@ -8,20 +8,20 @@
     <link rel="stylesheet" type="text/css" href="/css/bootstrap.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controle de Acesso</title>
+
 </head>
 
 <body>
-    {{>_navbar}}   
+    {{>_navbar}}
     <div class="container mt-4">
         {{#if error}}
         <div class="alert alert-danger">{{error}}</div>
         {{else}}
         {{/if}}
-         {{>_msg}}
-        {{{body}}} 
-         {{>_footer}}       
+        {{>_msg}}
+        {{{body}}}
     </div>
-
+    {{>_footer}}
 </body>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
     integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
