@@ -1,10 +1,11 @@
 <meta http-equiv='refresh' content='10'>
 
-<div class="jumbotron">
-    <h2>Log ESP:</h2>
-    <br>
+<div class="jumbotron conteudo">
+
+    <h1>Tabela de Registro de Acesso de Usuários:</h1>    
+    <hr>
     <div class="btn-group dropright">
-        <button class="btn btn-primary dropdown-toggle mt-2" type="button" id="dropdownMenuButton"
+        <button class="btn btn-success dropdown-toggle mt-2" type="button" id="dropdownMenuButton"
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Organizar por...
         </button>
@@ -17,11 +18,12 @@
         </div>
     </div>
     <!--Log Antigo-->
-    <a href="/esp/log/4/1"><button type="button" class="btn btn-info mt-2">Modo Blocos</button> </a>
-    <hr>
-    <table class="table table-bordered table-striped mt-2">
+    <a href="/esp/log/4/1"><button type="button" class="btn btn-primary mt-2">Modo Blocos</button> </a>
+    <a href="/esp/log/delete"><button class="btn btn-danger mt-2">Deletar todos os logs</button></a>
+    
+    <table class="table table-bordered table-striped mt-4 ">
         <tr>
-            <th class="text-center">
+            <th class="text-center ">
                 Nome<br>
             </th>
             <th class="text-center">
@@ -41,9 +43,9 @@
                 Servidor (Hora|Data) <br>
             </th>
         </tr>
-        </thead>
-        <tbody>
-            {{#each posts}}
+        </thead>        
+        <tbody>            
+            {{#each posts}}            
             <tr>
                 <th class="text-center" scope="row">{{nome}}</th>
                 <td class="text-center">{{aute}}</td>
@@ -55,6 +57,4 @@
             {{/each}}
         </tbody>
     </table>
-
-    <a href="/esp/log/delete"><button class="btn btn-danger mt-2">Deletar todos os logs</button></a>
 </div>

@@ -1,8 +1,9 @@
 <meta http-equiv='refresh' content='10'>
-<div class="jumbotron">
-  <h2>Log ESP:</h2>
+<div class="jumbotron conteudo">
+  <h1>Registro de Acesso de Usuários:</h1>    
+    <hr>
   <div class="btn-group dropright">
-    <button class="btn btn-primary dropdown-toggle mt-2" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+    <button class="btn btn-success dropdown-toggle mt-2" type="button" id="dropdownMenuButton" data-toggle="dropdown"
       aria-haspopup="true" aria-expanded="false">
       Organizar por...
     </button>
@@ -14,11 +15,12 @@
       <a class="dropdown-item" href="/esp/log/4/1">N° Banco</a>
     </div>
   </div>
-  <a href="/esp/log/4/0"><button type="button" class="btn btn-info mt-2">Modo Tabela</button> </a>
-  <hr>
+  <a href="/esp/log/4/0"><button type="button" class="btn btn-primary mt-2">Modo Tabela</button> </a>
+  <a href="/esp/log/delete"><button class="btn btn-danger mt-2">Deletar todos os logs</button></a>
+  
   <ul class="list-group mt-4">
     {{#each posts}}
-    <li class="list-group-item ">
+    <li class="list-group-item blocos">
       <h1>{{id}} -) {{nome}}</h1>
       <h4>Acesso: {{aute}}</h4>
       <h4>Hora Registrada pelo Esp={{tempo}}</h4>
@@ -27,6 +29,6 @@
     </li>
     {{/each}}
   </ul>
-  <a href="/esp/log/delete"><button class="btn btn-danger mt-2">Deletar todos os logs</button></a>
+  
 
 </div>
