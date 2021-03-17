@@ -7,12 +7,11 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="/">Inicio <span class="sr-only">(current)</span></a>
-        
-        
-{{#if user}}
-        {{else}}
-         {{/if}}
+
+
+
+        {{#if user}}
+
       <li class="nav-item active">
         <a class="nav-link" href="/admin/usuario">Usuário <span class="sr-only">(current)</span></a>
       </li>
@@ -26,15 +25,33 @@
           Configurações
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="#">Acesso ao site</a>
-          <a class="dropdown-item" href="#">Comunicação entre o ESP</a>
+          {{!-- <a class="dropdown-item" href="#">Acesso ao site</a>
+          <a class="dropdown-item" href="#">Comunicação entre o ESP</a> --}}
           <a class="dropdown-item" href="/esp/inco">Ciclo de incoerência</a>
         </div>
       </li>
-     
 
-
-
+      {{!-- <li class="nav-item active">
+        <a class="nav-link" href="/site/logout">Deslogar {{user}}<span class="sr-only">(current)</span></a>
+      </li> --}}
     </ul>
+    {{!-- <form class="form-inline my-2 my-lg-0">
+      <a class="nav-link" href="/site/logout">Deslogar {{user}}<span class="sr-only">(current)</span></a>
+    </form> --}}
+    <form class="form-inline my-2 my-lg-0">
+      <a type="button" class="btn btn-danger" href="/site/logout">Deslogar {{user}}</a>
+    </form>
+    {{else}}
+    <a class="nav-link" href="/">Inicio <span class="sr-only">(current)</span></a>
+    </ul>
+    {{/if}}
+
+
+    {{!-- <form class="form-inline my-2 my-lg-0">
+      <a type="button" class="btn btn-danger" href="/site/logout">Deslogar {{user}}</a>
+    </form> --}}
+
+    {{!-- </ul> --}}
+
   </div>
 </nav>

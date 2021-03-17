@@ -3,10 +3,10 @@ class Pilha {
         this._top = null;
         this._count = 0;
     }
-    GetCount = function () {
+     GetCount() {
         return this._count;
     }
-    Peek = function () {
+    Peek() {
         if (this._top) {
             return this._top.data;
         }
