@@ -147,10 +147,14 @@ var tratamentoDados = setInterval(function () {
           }
           if (mensgrecebida[2] == 'E') {
             // Algum log foi excruido
-            var idLogExcruido;
-            for (var a = 3; a < mensgrecebida.length; a++) {
-              idLogExcruido = mensgrecebida[a];
-            }
+            let idLogExcruido = mensgrecebida.substring(3);
+            // 6,
+            //  mensgrecebida.indexOf('.')
+            //);
+            //for (var a = 3; a < mensgrecebida.length; a++) {
+            //  idLogExcruido = mensgrecebida[a];
+            //}
+            //console.log(mensgrecebida);
             console.log('Excruido Log: ' + idLogExcruido);
             controleLog = true;
           }

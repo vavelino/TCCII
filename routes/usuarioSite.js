@@ -63,16 +63,16 @@ routersite.post('/registro', (req, res) => {
               var e = "','";
               //hash
               var g = "','";
-              var h = 'false';
+              var h = '0';
               var i = "',CURRENT_TIMESTAMP)";
-              var sql = a + b + c + d + e + hash + g + h + i;
-              usudb.connection.query(sql, function (err, result) {
+              let querrySql2 = a + b + c + d + e + hash + g + h + i;
+              usudb.connection.query(querrySql2, function (err, result) {
                 if (err || result.affectedRows == 0) {
                   req.flash('error_msg', 'Erro ao cadastrar acesso ');
                   res.redirect('/');
                 } else {
                   req.flash('success_msg', 'Acesso cadastrado');
-                  res.redirect('/site/registro');
+                  res.redirect('/');
                 }
               });
             }
